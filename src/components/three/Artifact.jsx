@@ -4,7 +4,7 @@ import { useMuseumStore } from '../../store/useMuseumStore';
  * Artefacto seleccionable de la escena. Solo escribe en el store global;
  * no sabe nada de la interfaz 2D que mostrará su ficha.
  */
-export default function Artifact({ artifact }) {
+export default function Artifact({ artifact, size, position }) {
   const selectArtifact = useMuseumStore((s) => s.selectArtifact);
 
   const handleClick = (event) => {
@@ -13,9 +13,14 @@ export default function Artifact({ artifact }) {
   };
 
   return (
-    <mesh name={artifact.id} position={artifact.position} onClick={handleClick}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#d4af37" />
+    <mesh
+      name={artifact.id}
+      position={position}
+      castShadow
+      onClick={handleClick}
+    >
+      <boxGeometry args={[size, size, size]} />
+      <meshStandardMaterial color="#d4af37" metalness={0.6} roughness={0.35} />
     </mesh>
   );
 }

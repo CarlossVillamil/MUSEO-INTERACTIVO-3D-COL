@@ -8,14 +8,14 @@ export const ARTIFACTS = [
     roomId: 'sala-precolombina',
     name: 'Artefacto de ejemplo 1',
     description: 'Ficha de ejemplo del primer artefacto.',
-    position: [-1.5, 0.5, 0],
+    position: [-1.5, 0, 0],
   },
   {
     id: 'artefacto-2',
     roomId: 'sala-precolombina',
     name: 'Artefacto de ejemplo 2',
     description: 'Ficha de ejemplo del segundo artefacto.',
-    position: [1.5, 0.5, 0],
+    position: [1.5, 0, 0],
   },
 ];
 

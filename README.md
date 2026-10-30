@@ -27,11 +27,12 @@ Museo virtual construido con Vite + React + React Three Fiber, con estado global
 src/
 ├── data/              # Catálogos puros (salas y fichas de artefactos)
 ├── store/             # Estado global con Zustand + selectores
-├── scene/             # Canvas, controles del visitante (Player) y movimiento
+├── scene/             # Canvas, visitante (Player), movimiento y proximidad
+├── lib/               # Configuración transversal (filtro de consola de three.js)
 ├── rooms/             # Una carpeta por sala + registro (rooms/index.js)
 │   └── SalaPrecolombina/
 └── components/
-    ├── three/         # Componentes 3D reutilizables (Artifact, RoomShell)
+    ├── three/         # Componentes 3D (RoomShell, Exhibit = Pedestal + Artifact + ExhibitLight)
     └── ui/            # Interfaz 2D (Interface, ArtifactCard, PauseMenu)
 ```
 
@@ -59,6 +60,16 @@ Reglas:
 
 - `components/ui` nunca importa de `scene`, `rooms` ni `components/three` (y viceversa).
 - Los datos de `data/` no dependen de React ni de Three.js.
+
+### Iluminación de vitrinas
+
+Cada vitrina (`Exhibit`) tiene un spotlight propio que proyecta la sombra del artefacto sobre su base. Su intensidad sube de forma gradual cuando el visitante está a menos de 3 m (`scene/proximity.js`).
+
+### Advertencias de dependencias
+
+`src/lib/threeConsole.js` filtra, mediante la API oficial `setConsoleFunction` de three.js, solo las advertencias causadas por dependencias que no podemos corregir:
+
+- `THREE.Clock` deprecado: lo crea internamente `@react-three/fiber` 9.x. Eliminar el filtro al actualizar a la v10.
 
 ### Agregar una sala
 

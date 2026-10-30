@@ -20,9 +20,9 @@ export default function MuseumScene() {
 
   return (
     <KeyboardControls map={KEYBOARD_MAP}>
-      <Canvas camera={{ position: [0, EYE_HEIGHT, 5] }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[3, 5, 4]} />
+      <Canvas shadows="percentage" camera={{ position: [0, EYE_HEIGHT, 5] }}>
+        <ambientLight intensity={0.35} />
+        <directionalLight position={[3, 5, 4]} intensity={0.4} />
         {CurrentRoom && <CurrentRoom />}
         <Player />
       </Canvas>

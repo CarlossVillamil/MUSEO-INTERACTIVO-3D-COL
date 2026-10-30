@@ -1,4 +1,4 @@
-import Artifact from '../../components/three/Artifact';
+import Exhibit from '../../components/three/Exhibit';
 import RoomShell from '../../components/three/RoomShell';
 import { getArtifactsByRoom } from '../../data/artifacts';
 
@@ -10,7 +10,7 @@ export default function SalaPrecolombina() {
     <group name={ROOM_ID}>
       <RoomShell />
       {artifacts.map((artifact) => (
-        <Artifact key={artifact.id} artifact={artifact} />
+        <Exhibit key={artifact.id} artifact={artifact} />
       ))}
     </group>
   );
