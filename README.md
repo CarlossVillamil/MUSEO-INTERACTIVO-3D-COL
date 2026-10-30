@@ -12,18 +12,27 @@ Museo virtual construido con Vite + React + React Three Fiber, con estado global
 | `pnpm test`   | Pruebas unitarias (Vitest)   |
 | `pnpm format` | Formatea `src/` con Prettier |
 
+## Controles
+
+| Acción             | Control              |
+| ------------------ | -------------------- |
+| Capturar el cursor | Clic sobre la escena |
+| Moverse            | `W` `A` `S` `D`      |
+| Mirar alrededor    | Mouse                |
+| Pausar / liberar   | `Esc`                |
+
 ## Arquitectura
 
 ```
 src/
 ├── data/              # Catálogos puros (salas y fichas de artefactos)
 ├── store/             # Estado global con Zustand + selectores
-├── scene/             # Canvas de React Three Fiber
+├── scene/             # Canvas, controles del visitante (Player) y movimiento
 ├── rooms/             # Una carpeta por sala + registro (rooms/index.js)
 │   └── SalaPrecolombina/
 └── components/
-    ├── three/         # Componentes 3D reutilizables (Artifact)
-    └── ui/            # Interfaz 2D (Interface, ArtifactCard)
+    ├── three/         # Componentes 3D reutilizables (Artifact, RoomShell)
+    └── ui/            # Interfaz 2D (Interface, ArtifactCard, PauseMenu)
 ```
 
 ### Comunicación 2D ↔ 3D
@@ -44,6 +53,7 @@ Ficha 2D (components/ui/ArtifactCard)
 | -------------------- | ---------------------------------------- |
 | `currentRoomId`      | —                                        |
 | `selectedArtifactId` | `selectArtifact(id)`, `clearSelection()` |
+| `isPaused`           | `pause()`, `resume()`                    |
 
 Reglas:
 

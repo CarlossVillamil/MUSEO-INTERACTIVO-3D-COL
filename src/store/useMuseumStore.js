@@ -10,9 +10,12 @@ import { DEFAULT_ROOM_ID } from '../data/rooms';
 export const useMuseumStore = create((set) => ({
   currentRoomId: DEFAULT_ROOM_ID,
   selectedArtifactId: null,
+  isPaused: false,
 
   selectArtifact: (artifactId) => set({ selectedArtifactId: artifactId }),
   clearSelection: () => set({ selectedArtifactId: null }),
+  pause: () => set({ isPaused: true }),
+  resume: () => set({ isPaused: false }),
 }));
 
 export const selectSelectedArtifact = (state) =>

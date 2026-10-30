@@ -34,6 +34,18 @@ describe('useMuseumStore', () => {
     expect(selectSelectedArtifact(useMuseumStore.getState())).toBeNull();
   });
 
+  // Escenario: Liberar el cursor
+  it('pausa al liberar el cursor y reanuda al capturarlo', () => {
+    const { pause, resume } = useMuseumStore.getState();
+    expect(useMuseumStore.getState().isPaused).toBe(false);
+
+    pause();
+    expect(useMuseumStore.getState().isPaused).toBe(true);
+
+    resume();
+    expect(useMuseumStore.getState().isPaused).toBe(false);
+  });
+
   it('devuelve null para un artefacto inexistente', () => {
     useMuseumStore.getState().selectArtifact('no-existe');
     expect(selectSelectedArtifact(useMuseumStore.getState())).toBeNull();
