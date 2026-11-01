@@ -62,7 +62,9 @@ export default function Minimap() {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.code === 'KeyM' && !event.repeat) toggleMap();
+      if (event.code !== 'KeyM' || event.repeat) return;
+      // El mapa solo está disponible dentro del museo, no en la bienvenida
+      if (useMuseumStore.getState().hasEntered) toggleMap();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);

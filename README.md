@@ -14,13 +14,14 @@ Museo virtual construido con Vite + React + React Three Fiber, con estado global
 
 ## Controles
 
-| Acción             | Control              |
-| ------------------ | -------------------- |
-| Capturar el cursor | Clic sobre la escena |
-| Moverse            | `W` `A` `S` `D`      |
-| Mirar alrededor    | Mouse                |
-| Pausar / liberar   | `Esc`                |
-| Mostrar mapa       | `M`                  |
+| Acción             | Control                                     |
+| ------------------ | ------------------------------------------- |
+| Entrar al museo    | Botón «Entrar al museo» (captura el cursor) |
+| Capturar el cursor | Clic sobre la escena                        |
+| Moverse            | `W` `A` `S` `D`                             |
+| Mirar alrededor    | Mouse                                       |
+| Pausar / liberar   | `Esc`                                       |
+| Mostrar mapa       | `M`                                         |
 
 ## Arquitectura
 
@@ -28,7 +29,7 @@ Museo virtual construido con Vite + React + React Three Fiber, con estado global
 src/
 ├── data/              # Catálogos puros (salas con su distribución y fichas de artefactos)
 ├── store/             # Estado global con Zustand + selectores
-├── scene/             # Canvas, visitante (Player), movimiento, proximidad y muros (layout)
+├── scene/             # Canvas, visitante (Player), carga, movimiento, proximidad y muros (layout)
 ├── lib/               # Configuración transversal (filtro de consola de three.js)
 ├── rooms/             # Una carpeta por sala + registro (rooms/index.js)
 │   ├── SalaPrecolombina/
@@ -37,7 +38,7 @@ src/
 │   └── SalaRepublica/
 └── components/
     ├── three/         # Componentes 3D (MuseumShell, Room, RoomSign, Exhibit = Pedestal + Artifact + ExhibitLight)
-    └── ui/            # Interfaz 2D (Interface, ArtifactCard, PauseMenu, RoomBanner, Minimap)
+    └── ui/            # Interfaz 2D (Interface, WelcomeScreen, ArtifactCard, PauseMenu, RoomBanner, Minimap)
 ```
 
 ### Comunicación 2D ↔ 3D
@@ -56,6 +57,9 @@ Ficha 2D (components/ui/ArtifactCard)
 
 | Estado               | Acciones                                 |
 | -------------------- | ---------------------------------------- |
+| `loadProgress`       | `setLoadProgress(p)`                     |
+| `isSceneReady`       | `markSceneReady()`                       |
+| `hasEntered`         | `enterMuseum()`                          |
 | `currentRoomId`      | `enterRoom(id)` (null = pasillo)         |
 | `playerPosition`     | `setPlayerPosition(x, z)`                |
 | `isMapOpen`          | `toggleMap()`                            |
@@ -66,6 +70,12 @@ Reglas:
 
 - `components/ui` nunca importa de `scene`, `rooms` ni `components/three` (y viceversa).
 - Los datos de `data/` no dependen de React ni de Three.js.
+
+### Pantalla de bienvenida y carga
+
+- La escena se envuelve en `<Suspense>`: `SceneReady` solo se monta cuando todos los recursos (fuente de la señalética, modelos…) terminaron de cargar, y entonces marca `isSceneReady`.
+- `LoadingTracker` publica el porcentaje de `useProgress` (loaders de three.js) en `loadProgress`.
+- `WelcomeScreen` muestra los controles con una barra de progreso mientras carga y, al terminar, el botón «Entrar al museo». Ese clic también captura el cursor: `Player` gestiona la captura y solo la permite después de entrar.
 
 ### Distribución del museo
 

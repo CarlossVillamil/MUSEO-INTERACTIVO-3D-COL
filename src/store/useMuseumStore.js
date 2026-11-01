@@ -8,6 +8,12 @@ import { SPAWN_POINT, getRoomById } from '../data/rooms';
  * (src/components/ui): ninguna de las dos capas importa a la otra.
  */
 export const useMuseumStore = create((set) => ({
+  // Porcentaje (0–100) de recursos 3D descargados
+  loadProgress: 0,
+  // La escena terminó de montar todos sus recursos
+  isSceneReady: false,
+  // El visitante pulsó «Entrar al museo» en la pantalla de bienvenida
+  hasEntered: false,
   // Sala en la que está el visitante; null cuando está en el pasillo
   currentRoomId: null,
   // Posición del visitante sobre el piso (para el minimapa)
@@ -16,6 +22,9 @@ export const useMuseumStore = create((set) => ({
   isPaused: false,
   isMapOpen: false,
 
+  setLoadProgress: (progress) => set({ loadProgress: progress }),
+  markSceneReady: () => set({ isSceneReady: true }),
+  enterMuseum: () => set({ hasEntered: true }),
   enterRoom: (roomId) => set({ currentRoomId: roomId }),
   setPlayerPosition: (x, z) => set({ playerPosition: { x, z } }),
   selectArtifact: (artifactId) => set({ selectedArtifactId: artifactId }),

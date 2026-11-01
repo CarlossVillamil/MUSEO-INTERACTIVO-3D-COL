@@ -20,6 +20,28 @@ describe('useMuseumStore', () => {
     expect(selectSelectedArtifact(state)).toBeNull();
   });
 
+  // Escenario: Carga en progreso
+  it('expone el porcentaje de carga mientras la escena no está lista', () => {
+    const state = useMuseumStore.getState();
+    expect(state.isSceneReady).toBe(false);
+    expect(state.loadProgress).toBe(0);
+
+    state.setLoadProgress(42);
+    expect(useMuseumStore.getState().loadProgress).toBe(42);
+  });
+
+  // Escenario: Primer ingreso
+  it('al terminar la carga permite entrar al museo', () => {
+    const { markSceneReady, enterMuseum } = useMuseumStore.getState();
+    expect(useMuseumStore.getState().hasEntered).toBe(false);
+
+    markSceneReady();
+    expect(useMuseumStore.getState().isSceneReady).toBe(true);
+
+    enterMuseum();
+    expect(useMuseumStore.getState().hasEntered).toBe(true);
+  });
+
   // Escenario: Comunicación 2D-3D
   it('al seleccionar un artefacto la ficha correspondiente queda disponible', () => {
     useMuseumStore.getState().selectArtifact('artefacto-2');

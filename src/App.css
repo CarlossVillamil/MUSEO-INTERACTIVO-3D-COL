@@ -130,3 +130,114 @@
 .pause-menu p {
   margin: 0;
 }
+
+.welcome {
+  pointer-events: auto;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+  background: radial-gradient(circle at center, #1d1914 0%, #0d0d0d 70%);
+}
+
+.welcome__panel {
+  width: min(520px, 100%);
+  padding: 32px 28px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+}
+
+.welcome h1 {
+  margin: 0 0 8px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  color: #d4af37;
+}
+
+.welcome__intro {
+  margin: 0 0 24px;
+  opacity: 0.85;
+}
+
+.welcome h2 {
+  margin: 0 0 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.welcome__controls {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+
+.welcome__controls li {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.welcome__keys {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.welcome kbd {
+  min-width: 28px;
+  padding: 3px 7px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #f4efe6;
+  background: #2a2520;
+  border: 1px solid rgba(244, 239, 230, 0.35);
+  border-bottom-width: 3px;
+  border-radius: 5px;
+}
+
+.welcome__enter {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  padding: 12px 32px;
+  color: #111;
+  background: #d4af37;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.welcome__enter:hover,
+.welcome__enter:focus-visible {
+  background: #e6c454;
+  outline: 2px solid #f4efe6;
+  outline-offset: 3px;
+}
+
+.welcome__loading p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.welcome__progress {
+  height: 8px;
+  overflow: hidden;
+  background: #2a2520;
+  border-radius: 4px;
+}
+
+.welcome__progress-fill {
+  height: 100%;
+  background: #d4af37;
+  transition: width 0.3s ease-out;
+}
