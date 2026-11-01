@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useMuseumStore, selectSelectedArtifact } from './useMuseumStore';
-import { DEFAULT_ROOM_ID } from '../data/rooms';
+import {
+  useMuseumStore,
+  selectCurrentRoom,
+  selectSelectedArtifact,
+} from './useMuseumStore';
+import { SPAWN_POINT } from '../data/rooms';
 
 const initialState = useMuseumStore.getState();
 
@@ -9,9 +13,10 @@ describe('useMuseumStore', () => {
     useMuseumStore.setState(initialState, true);
   });
 
-  it('inicia en la sala por defecto sin artefacto seleccionado', () => {
+  it('inicia en el pasillo, en el punto de inicio, sin artefacto seleccionado', () => {
     const state = useMuseumStore.getState();
-    expect(state.currentRoomId).toBe(DEFAULT_ROOM_ID);
+    expect(selectCurrentRoom(state)).toBeNull();
+    expect(state.playerPosition).toEqual(SPAWN_POINT);
     expect(selectSelectedArtifact(state)).toBeNull();
   });
 
@@ -44,6 +49,34 @@ describe('useMuseumStore', () => {
 
     resume();
     expect(useMuseumStore.getState().isPaused).toBe(false);
+  });
+
+  // Escenario: Entrar a una sala temática
+  it('al entrar a una sala expone su nombre y periodo', () => {
+    useMuseumStore.getState().enterRoom('sala-colonia');
+    expect(selectCurrentRoom(useMuseumStore.getState())).toMatchObject({
+      name: 'Sala de la Colonia',
+      period: '1550 – 1810',
+    });
+
+    useMuseumStore.getState().enterRoom(null);
+    expect(selectCurrentRoom(useMuseumStore.getState())).toBeNull();
+  });
+
+  // Escenario: Consultar el mapa
+  it('la tecla M alterna el minimapa con la posición del visitante', () => {
+    const { toggleMap, setPlayerPosition } = useMuseumStore.getState();
+    expect(useMuseumStore.getState().isMapOpen).toBe(false);
+
+    toggleMap();
+    setPlayerPosition(-8, -6);
+    expect(useMuseumStore.getState()).toMatchObject({
+      isMapOpen: true,
+      playerPosition: { x: -8, z: -6 },
+    });
+
+    toggleMap();
+    expect(useMuseumStore.getState().isMapOpen).toBe(false);
   });
 
   it('devuelve null para un artefacto inexistente', () => {

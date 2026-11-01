@@ -31,6 +31,86 @@
   cursor: pointer;
 }
 
+.room-banner {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 28px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.75);
+  border-bottom: 2px solid #d4af37;
+  border-radius: 8px;
+  animation: room-banner-in 0.4s ease-out;
+}
+
+.room-banner h2 {
+  margin: 0;
+  color: #d4af37;
+  font-size: 1.4rem;
+}
+
+.room-banner p {
+  margin: 4px 0 0;
+}
+
+@keyframes room-banner-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}
+
+.minimap {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: min(240px, calc(100% - 32px));
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 8px;
+}
+
+.minimap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.minimap p {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.minimap__corridor {
+  fill: #3a332d;
+}
+
+.minimap__room {
+  fill: #5a4a3f;
+  stroke: #d9d2c5;
+  stroke-width: 0.2;
+}
+
+.minimap__room--current {
+  fill: #7a6340;
+}
+
+.minimap__label {
+  fill: #f4efe6;
+  font-size: 1.5px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.minimap__player {
+  fill: #d4af37;
+  stroke: #111;
+  stroke-width: 0.25;
+}
+
 .pause-menu {
   pointer-events: auto;
   position: absolute;

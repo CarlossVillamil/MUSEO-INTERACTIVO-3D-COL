@@ -1,4 +1,7 @@
 import SalaPrecolombina from './SalaPrecolombina/SalaPrecolombina';
+import SalaColonia from './SalaColonia/SalaColonia';
+import SalaIndependencia from './SalaIndependencia/SalaIndependencia';
+import SalaRepublica from './SalaRepublica/SalaRepublica';
 
 /**
  * Registro de salas: relaciona el id de `data/rooms.js` con su componente 3D.
@@ -6,4 +9,7 @@ import SalaPrecolombina from './SalaPrecolombina/SalaPrecolombina';
  */
 export const ROOM_COMPONENTS = {
   'sala-precolombina': SalaPrecolombina,
+  'sala-colonia': SalaColonia,
+  'sala-independencia': SalaIndependencia,
+  'sala-republica': SalaRepublica,
 };
