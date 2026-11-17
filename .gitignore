@@ -26,3 +26,5 @@ dist-ssr
 # Modelos 3D originales (pesados): solo se versionan los optimizados de public/models
 models/source/*
 !models/source/.gitkeep
+
+docs/
