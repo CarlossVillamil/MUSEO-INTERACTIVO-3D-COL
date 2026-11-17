@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
 import { Canvas, events } from '@react-three/fiber';
-import { KeyboardControls } from '@react-three/drei';
+import { KeyboardControls, Preload } from '@react-three/drei';
 import { SPAWN_POINT } from '../data/rooms';
 import { ROOM_COMPONENTS } from '../rooms';
+import ExhibitLights from '../components/three/ExhibitLights';
 import MuseumShell from '../components/three/MuseumShell';
 import { LoadingTracker, SceneReady } from './LoadingTracker';
 import MuseumEnvironment from './MuseumEnvironment';
@@ -44,12 +45,16 @@ export default function MuseumScene() {
         <LoadingTracker />
         <ambientLight intensity={0.35} />
         <directionalLight position={[3, 5, 4]} intensity={0.4} />
+        <ExhibitLights />
         <Suspense fallback={null}>
           <MuseumEnvironment />
           <MuseumShell />
           {Object.entries(ROOM_COMPONENTS).map(([roomId, RoomComponent]) => (
             <RoomComponent key={roomId} />
           ))}
+          {/* Compila los shaders y sube las texturas a la GPU durante la
+              carga, no la primera vez que cada pieza entra en cuadro */}
+          <Preload all />
           <SceneReady />
         </Suspense>
         <Player />

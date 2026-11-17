@@ -126,6 +126,13 @@ const EXHIBIT_SLOTS = [
 const FOCUS_DISTANCE_FROM_CENTER = 2;
 
 export const MAX_EXHIBITS_PER_ROOM = EXHIBIT_SLOTS.length;
+// Altura de la base de cada vitrina, sobre la que se apoya el artefacto
+export const PEDESTAL_HEIGHT = 0.9;
+// Spot de cada vitrina: cerca del techo y en diagonal (adelante a la
+// derecha) para que la sombra del artefacto caiga sobre su base y se vea
+// desde el frente
+const SPOT_HEIGHT = 3.6;
+const SPOT_OFFSET = 0.9;
 
 /**
  * Posición (x, z) de cada vitrina de una sala y su rotación en Y para que la
@@ -141,4 +148,21 @@ export function getExhibitSlots(room) {
     const z = center.z + localZ;
     return { x, z, rotationY: Math.atan2(focusX - x, center.z - z) };
   });
+}
+
+/**
+ * Posición del spot de una vitrina y del punto al que apunta (el centro del
+ * artefacto, a `targetHeight`), en coordenadas del museo.
+ */
+export function getSpotPlacement(slot, targetHeight) {
+  const cos = Math.cos(slot.rotationY);
+  const sin = Math.sin(slot.rotationY);
+  return {
+    position: [
+      slot.x + SPOT_OFFSET * (cos + sin),
+      SPOT_HEIGHT,
+      slot.z + SPOT_OFFSET * (cos - sin),
+    ],
+    target: [slot.x, targetHeight, slot.z],
+  };
 }

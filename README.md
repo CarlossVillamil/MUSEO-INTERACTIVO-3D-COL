@@ -128,6 +128,17 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 - Al seleccionar una pieza, `Player` libera el cursor: la navegación queda en pausa (sin mostrar el menú de pausa) y `ArtifactCard` muestra nombre, época, cultura y descripción (`period` y `culture` del catálogo).
 - `Esc` o «Cerrar» limpian la selección y `Player` vuelve a capturar el cursor: el recorrido sigue desde la misma posición. Si el navegador rechaza la captura, aparece la pausa y un clic la retoma.
 
+### Modo de inspección
+
+- Desde la ficha, «Inspeccionar en 3D» activa `isInspecting` en el store. `scene/InspectionScene` abre un lienzo propio sobre el museo con la pieza aislada y centrada (`InspectedArtifact`, normalizada a 1 m).
+- `OrbitControls`: arrastrar rota la pieza y la rueda acerca o aleja entre 1,2 m y 4 m (sin desplazamiento lateral). «Restablecer vista» incrementa `inspectionResetCount` y los controles vuelven a la vista inicial.
+- «Volver a la ficha» o `Esc` terminan la inspección. Al cerrar la ficha también termina.
+
+### Luces de las vitrinas
+
+- `ExhibitLights` mantiene siempre montados 9 spots (uno por vitrina posible) y los reubica en la sala actual. Si la cantidad de luces cambiara al cruzar una puerta, three.js recompilaría todos los shaders y la escena se congelaría un momento (antes: hasta 433 ms; ahora ningún cuadro pasa de ~17 ms).
+- Las sombras se calculan una sola vez cada vez que un spot cambia de vitrina (`shadow.autoUpdate = false`), y `<Preload all />` compila shaders y sube texturas durante la carga.
+
 ### Artefactos en las vitrinas
 
 - El catálogo `src/data/artifacts.js` define cada pieza: sala, ficha, modelo GLB, preset de material, tamaño de exhibición y crédito del modelo. El orden dentro de cada sala define su vitrina (`getExhibitSlots` en `scene/layout.js`: 9 vitrinas por sala, orientadas hacia la entrada).

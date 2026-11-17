@@ -6,6 +6,7 @@ import {
   WALL_HEIGHT,
   getDoor,
   getExhibitSlots,
+  getSpotPlacement,
   getWallSegments,
 } from './layout';
 
@@ -108,5 +109,28 @@ describe('getExhibitSlots', () => {
       const toDoor = { x: door.x - x, z: door.z - z };
       expect(facing.x * toDoor.x + facing.z * toDoor.z).toBeGreaterThan(0);
     });
+  });
+});
+
+describe('getSpotPlacement', () => {
+  it('ubica el spot sobre la vitrina, adelante a la derecha, apuntando al artefacto', () => {
+    const { position, target } = getSpotPlacement(
+      { x: 2, z: 3, rotationY: 0 },
+      1.1
+    );
+    expect(position[0]).toBeCloseTo(2.9);
+    expect(position[1]).toBeGreaterThan(3);
+    expect(position[2]).toBeCloseTo(3.9);
+    expect(target).toEqual([2, 1.1, 3]);
+  });
+
+  it('gira el desplazamiento con la orientación de la vitrina', () => {
+    const { position } = getSpotPlacement(
+      { x: 0, z: 0, rotationY: Math.PI / 2 },
+      1
+    );
+    // Igual que un objeto hijo del grupo de la vitrina rotado 90°
+    expect(position[0]).toBeCloseTo(0.9);
+    expect(position[2]).toBeCloseTo(-0.9);
   });
 });

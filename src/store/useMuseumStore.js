@@ -19,6 +19,10 @@ export const useMuseumStore = create((set) => ({
   // Posición del visitante sobre el piso (para el minimapa)
   playerPosition: SPAWN_POINT,
   selectedArtifactId: null,
+  // La pieza seleccionada se muestra aislada para rotarla y acercarla
+  isInspecting: false,
+  // Cambia cada vez que el visitante pide restablecer la vista de inspección
+  inspectionResetCount: 0,
   isPaused: false,
   isMapOpen: false,
 
@@ -28,7 +32,12 @@ export const useMuseumStore = create((set) => ({
   enterRoom: (roomId) => set({ currentRoomId: roomId }),
   setPlayerPosition: (x, z) => set({ playerPosition: { x, z } }),
   selectArtifact: (artifactId) => set({ selectedArtifactId: artifactId }),
-  clearSelection: () => set({ selectedArtifactId: null }),
+  clearSelection: () => set({ selectedArtifactId: null, isInspecting: false }),
+  startInspection: () =>
+    set((state) => ({ isInspecting: state.selectedArtifactId !== null })),
+  stopInspection: () => set({ isInspecting: false }),
+  resetInspectionView: () =>
+    set((state) => ({ inspectionResetCount: state.inspectionResetCount + 1 })),
   pause: () => set({ isPaused: true }),
   resume: () => set({ isPaused: false }),
   toggleMap: () => set((state) => ({ isMapOpen: !state.isMapOpen })),

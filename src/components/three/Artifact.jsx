@@ -1,34 +1,14 @@
-import { useMemo } from 'react';
-import { useGLTF } from '@react-three/drei';
-import { Box3 } from 'three';
-import { MODELS_BASE_URL } from '../../data/artifacts';
-import { fitToSize, prepareModel } from '../../scene/materials';
 import { useMuseumStore } from '../../store/useMuseumStore';
-
-// Decodificador Draco servido localmente (copiado de three/examples/jsm/libs)
-const DRACO_DECODER_PATH = '/draco/';
+import { useArtifactModel } from './useArtifactModel';
 
 /**
- * Artefacto seleccionable: carga su modelo GLB optimizado, le aplica el
- * material PBR del catálogo y lo ajusta al tamaño de exhibición, apoyado
- * sobre `position`. Solo escribe en el store global al ser seleccionado.
+ * Artefacto seleccionable: muestra su modelo con el material PBR del
+ * catálogo, ajustado al tamaño de exhibición y apoyado sobre `position`.
+ * Solo escribe en el store global al ser seleccionado.
  */
 export default function Artifact({ artifact, position }) {
-  const { scene } = useGLTF(
-    MODELS_BASE_URL + artifact.model,
-    DRACO_DECODER_PATH
-  );
+  const { model, fit } = useArtifactModel(artifact);
   const selectArtifact = useMuseumStore((s) => s.selectArtifact);
-
-  const { model, fit } = useMemo(() => {
-    const root = prepareModel(scene.clone(true), artifact);
-    if (artifact.rotation) root.rotation.set(...artifact.rotation);
-    root.updateMatrixWorld(true);
-    return {
-      model: root,
-      fit: fitToSize(new Box3().setFromObject(root), artifact.size),
-    };
-  }, [scene, artifact]);
 
   // Solo se abren las fichas de la sala en la que está el visitante
   // (el rayo del clic no se detiene en los muros)

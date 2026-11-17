@@ -101,6 +101,39 @@ describe('useMuseumStore', () => {
     expect(useMuseumStore.getState().isMapOpen).toBe(false);
   });
 
+  // Escenario: Inspeccionar pieza
+  it('inspecciona la pieza seleccionada y vuelve a la ficha', () => {
+    const { selectArtifact, startInspection, stopInspection } =
+      useMuseumStore.getState();
+
+    startInspection();
+    expect(useMuseumStore.getState().isInspecting).toBe(false);
+
+    selectArtifact('popora-de-oro');
+    startInspection();
+    expect(useMuseumStore.getState().isInspecting).toBe(true);
+
+    stopInspection();
+    expect(useMuseumStore.getState().isInspecting).toBe(false);
+    expect(useMuseumStore.getState().selectedArtifactId).toBe('popora-de-oro');
+  });
+
+  it('al cerrar la ficha también termina la inspección', () => {
+    const { selectArtifact, startInspection, clearSelection } =
+      useMuseumStore.getState();
+    selectArtifact('popora-de-oro');
+    startInspection();
+
+    clearSelection();
+    expect(useMuseumStore.getState().isInspecting).toBe(false);
+  });
+
+  it('cada pedido de restablecer la vista incrementa el contador', () => {
+    useMuseumStore.getState().resetInspectionView();
+    useMuseumStore.getState().resetInspectionView();
+    expect(useMuseumStore.getState().inspectionResetCount).toBe(2);
+  });
+
   it('devuelve null para un artefacto inexistente', () => {
     useMuseumStore.getState().selectArtifact('no-existe');
     expect(selectSelectedArtifact(useMuseumStore.getState())).toBeNull();

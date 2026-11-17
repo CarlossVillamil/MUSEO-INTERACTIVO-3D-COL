@@ -1,5 +1,6 @@
 import ArtifactCard from './ArtifactCard';
 import Crosshair from './Crosshair';
+import InspectionPanel from './InspectionPanel';
 import Minimap from './Minimap';
 import PauseMenu from './PauseMenu';
 import RoomBanner from './RoomBanner';
@@ -13,6 +14,7 @@ export default function Interface() {
       <Minimap />
       <Crosshair />
       <ArtifactCard />
+      <InspectionPanel />
       <PauseMenu />
       <WelcomeScreen />
     </div>
