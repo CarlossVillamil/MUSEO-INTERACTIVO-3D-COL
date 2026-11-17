@@ -83,6 +83,9 @@ export default function Player() {
     getMoveDirection(getKeys(), state.camera, direction);
     state.camera.position.addScaledVector(direction, WALK_SPEED * delta);
     syncPlayerState(state.camera.position);
+    // Los rayos de la mira solo se recalculan con eventos del puntero; al
+    // caminar sin mover el mouse se reevalúa qué objeto queda bajo la mira
+    state.events.update?.();
   });
 
   return (

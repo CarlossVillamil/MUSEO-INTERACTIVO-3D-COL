@@ -130,6 +130,28 @@
   border-radius: 50%;
 }
 
+.crosshair--active {
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  background: transparent;
+  border: 2px solid #d4af37;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.crosshair__hint {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 4px 10px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+}
+
 .room-banner {
   position: absolute;
   top: 24px;

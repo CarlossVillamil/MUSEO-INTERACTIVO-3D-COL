@@ -23,6 +23,14 @@ export default function ExhibitLight({ placement }) {
   const lightRef = useRef(null);
   const [target] = useState(() => new Object3D());
 
+  // El mapa de sombra se crea al calcularla por primera vez. Sin él, los
+  // shaders de todo el museo muestrean una sombra inexistente y la escena se
+  // dibuja negra, así que se calcula al montar aunque la luz no tenga
+  // vitrina asignada (en el pasillo)
+  useLayoutEffect(() => {
+    lightRef.current.shadow.needsUpdate = true;
+  }, []);
+
   useLayoutEffect(() => {
     const light = lightRef.current;
     if (!placement || !light) return;

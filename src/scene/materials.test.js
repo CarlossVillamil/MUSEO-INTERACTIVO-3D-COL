@@ -83,6 +83,16 @@ describe('prepareModel', () => {
     expect(shared.metalness).toBe(0);
   });
 
+  it('calcula las normales de las mallas que no las traen', () => {
+    const geometry = new BoxGeometry();
+    geometry.deleteAttribute('normal');
+    const root = new Group();
+    root.add(new Mesh(geometry, new MeshStandardMaterial()));
+
+    prepareModel(root);
+    expect(geometry.attributes.normal).toBeDefined();
+  });
+
   it('rechaza presets desconocidos', () => {
     expect(() =>
       prepareModel(createModel(new MeshStandardMaterial()), {

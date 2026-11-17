@@ -62,7 +62,7 @@ function prepareMaterial(material, preset, tint) {
 
 /**
  * Prepara un modelo para exhibirlo: aplica el preset de material y activa
- * las sombras de todas sus mallas. `tint` reemplaza la textura de color por
+ * las sombras de todas sus mallas (y calcula sus normales si no las trae). `tint` reemplaza la textura de color por
  * un color uniforme (p. ej. una pieza genérica representada en oro) y
  * `hiddenMeshes` quita mallas del modelo por nombre.
  */
@@ -82,6 +82,11 @@ export function prepareModel(
 
   root.traverse((object) => {
     if (!object.isMesh) return;
+    // Algunos escaneos no traen normales; el contorno de resaltado las
+    // necesita para expandirse alrededor de la pieza
+    if (!object.geometry.attributes.normal) {
+      object.geometry.computeVertexNormals();
+    }
     object.castShadow = true;
     object.receiveShadow = true;
     object.material = Array.isArray(object.material)

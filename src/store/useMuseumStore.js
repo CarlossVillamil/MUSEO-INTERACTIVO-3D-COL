@@ -19,6 +19,8 @@ export const useMuseumStore = create((set) => ({
   // Posición del visitante sobre el piso (para el minimapa)
   playerPosition: SPAWN_POINT,
   selectedArtifactId: null,
+  // Artefacto bajo la mira del visitante (se resalta)
+  aimedArtifactId: null,
   // La pieza seleccionada se muestra aislada para rotarla y acercarla
   isInspecting: false,
   // Cambia cada vez que el visitante pide restablecer la vista de inspección
@@ -32,6 +34,13 @@ export const useMuseumStore = create((set) => ({
   enterRoom: (roomId) => set({ currentRoomId: roomId }),
   setPlayerPosition: (x, z) => set({ playerPosition: { x, z } }),
   selectArtifact: (artifactId) => set({ selectedArtifactId: artifactId }),
+  aimArtifact: (artifactId) => set({ aimedArtifactId: artifactId }),
+  // Solo deja de apuntar si la mira salió del mismo artefacto: al pasar de
+  // una pieza a otra, la salida de la anterior puede llegar después
+  clearAim: (artifactId) =>
+    set((state) =>
+      state.aimedArtifactId === artifactId ? { aimedArtifactId: null } : {}
+    ),
   clearSelection: () => set({ selectedArtifactId: null, isInspecting: false }),
   startInspection: () =>
     set((state) => ({ isInspecting: state.selectedArtifactId !== null })),
@@ -44,5 +53,9 @@ export const useMuseumStore = create((set) => ({
 }));
 
 export const selectCurrentRoom = (state) => getRoomById(state.currentRoomId);
+/** El visitante recorre el museo con el cursor capturado (sin pausa ni ficha). */
+export const selectIsNavigating = (state) =>
+  state.hasEntered && !state.isPaused && !state.selectedArtifactId;
+
 export const selectSelectedArtifact = (state) =>
   getArtifactById(state.selectedArtifactId);

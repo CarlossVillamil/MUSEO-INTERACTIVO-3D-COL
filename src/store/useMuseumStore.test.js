@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   useMuseumStore,
   selectCurrentRoom,
+  selectIsNavigating,
   selectSelectedArtifact,
 } from './useMuseumStore';
 import { SPAWN_POINT } from '../data/rooms';
@@ -132,6 +133,37 @@ describe('useMuseumStore', () => {
     useMuseumStore.getState().resetInspectionView();
     useMuseumStore.getState().resetInspectionView();
     expect(useMuseumStore.getState().inspectionResetCount).toBe(2);
+  });
+
+  // Escenario: Resaltar objeto
+  it('registra el artefacto bajo la mira y lo suelta al salir de él', () => {
+    const { aimArtifact, clearAim } = useMuseumStore.getState();
+
+    aimArtifact('popora-de-oro');
+    expect(useMuseumStore.getState().aimedArtifactId).toBe('popora-de-oro');
+
+    // La salida tardía de otra pieza no borra la actual
+    clearAim('pechera-tairona');
+    expect(useMuseumStore.getState().aimedArtifactId).toBe('popora-de-oro');
+
+    clearAim('popora-de-oro');
+    expect(useMuseumStore.getState().aimedArtifactId).toBeNull();
+  });
+
+  it('solo se navega tras entrar, sin pausa y sin ficha abierta', () => {
+    const { enterMuseum, pause, resume, selectArtifact } =
+      useMuseumStore.getState();
+    expect(selectIsNavigating(useMuseumStore.getState())).toBe(false);
+
+    enterMuseum();
+    expect(selectIsNavigating(useMuseumStore.getState())).toBe(true);
+
+    pause();
+    expect(selectIsNavigating(useMuseumStore.getState())).toBe(false);
+    resume();
+
+    selectArtifact('popora-de-oro');
+    expect(selectIsNavigating(useMuseumStore.getState())).toBe(false);
   });
 
   it('devuelve null para un artefacto inexistente', () => {

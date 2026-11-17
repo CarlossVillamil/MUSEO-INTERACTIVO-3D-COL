@@ -128,6 +128,13 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 - Al seleccionar una pieza, `Player` libera el cursor: la navegación queda en pausa (sin mostrar el menú de pausa) y `ArtifactCard` muestra nombre, época, cultura y descripción (`period` y `culture` del catálogo).
 - `Esc` o «Cerrar» limpian la selección y `Player` vuelve a capturar el cursor: el recorrido sigue desde la misma posición. Si el navegador rechaza la captura, aparece la pausa y un clic la retoma.
 
+### Resaltado de objetos interactivos
+
+- Cada `Artifact` avisa al store cuando la mira entra o sale de él (`aimArtifact` / `clearAim`). Mientras se navega, la pieza apuntada muestra un contorno dorado (`Outlines` de drei en cada malla, 3 px) y la mira se agranda con la indicación «Clic para ver más».
+- `Player` reevalúa en cada cuadro qué hay bajo la mira (`events.update()`), para que el resaltado siga al visitante aunque camine sin mover el mouse.
+- Paredes, piso y bases no tienen eventos: un clic sobre ellos no hace nada.
+- `prepareModel` calcula las normales de los escaneos que no las traen, porque el contorno las necesita.
+
 ### Modo de inspección
 
 - Desde la ficha, «Inspeccionar en 3D» activa `isInspecting` en el store. `scene/InspectionScene` abre un lienzo propio sobre el museo con la pieza aislada y centrada (`InspectedArtifact`, normalizada a 1 m).
