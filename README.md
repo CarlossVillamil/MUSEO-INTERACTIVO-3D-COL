@@ -4,13 +4,36 @@ Museo virtual construido con Vite + React + React Three Fiber, con estado global
 
 ## Scripts
 
-| Comando       | Descripción                  |
-| ------------- | ---------------------------- |
-| `pnpm dev`    | Servidor de desarrollo       |
-| `pnpm build`  | Build de producción          |
-| `pnpm lint`   | ESLint                       |
-| `pnpm test`   | Pruebas unitarias (Vitest)   |
-| `pnpm format` | Formatea `src/` con Prettier |
+| Comando                | Descripción                         |
+| ---------------------- | ----------------------------------- |
+| `pnpm dev`             | Servidor de desarrollo              |
+| `pnpm build`           | Build de producción                 |
+| `pnpm lint`            | ESLint                              |
+| `pnpm test`            | Pruebas unitarias (Vitest)          |
+| `pnpm format`          | Formatea `src/` con Prettier        |
+| `pnpm optimize:models` | Optimiza los modelos 3D (ver abajo) |
+
+## Pipeline de modelos 3D
+
+Los modelos exportados desde Blender (`.glb`) se guardan en `models/source/`, en una subcarpeta por sala (`pre-colombina/`, `colonial/`, `independencia/`, `republica/`), y se optimizan con:
+
+```bash
+pnpm optimize:models
+```
+
+El script (`scripts/optimize-models.js`, con [gltf-transform](https://gltf-transform.dev)) escribe en `public/models/`, con la misma estructura de carpetas, por cada modelo:
+
+| Archivo           | Contenido                  |
+| ----------------- | -------------------------- |
+| `nombre.glb`      | LOD0: geometría completa   |
+| `nombre.lod1.glb` | LOD1: ~50% de los vértices |
+| `nombre.lod2.glb` | LOD2: ~20% de los vértices |
+
+Pasos aplicados: conversión de materiales _spec/gloss_ a _metal/rough_ (three.js ya no soporta `KHR_materials_pbrSpecularGlossiness`), limpieza (`dedup`, `prune`, `weld`), simplificación con meshoptimizer (LOD1/LOD2), texturas a **WebP** (máx. 2048 px, calidad 85) y geometría comprimida con **Draco**. Informa la reducción de peso de cada archivo y termina con error si alguno supera los 5 MB de la Definición de Hecho.
+
+> Los originales de `models/source/` no se versionan (están en `.gitignore` por su peso); solo se suben los optimizados de `public/models/`, que son los que publica Vercel.
+
+> Los GLB optimizados usan las extensiones `KHR_draco_mesh_compression` y `EXT_texture_webp`: al cargarlos en la escena hay que configurar el decodificador Draco del loader.
 
 ## Controles
 
