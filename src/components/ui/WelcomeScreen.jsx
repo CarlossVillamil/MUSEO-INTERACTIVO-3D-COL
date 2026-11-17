@@ -1,37 +1,14 @@
+import { ROOMS } from '../../data/rooms';
 import { useMuseumStore } from '../../store/useMuseumStore';
+import ControlsList from './ControlsList';
 
-const CONTROLS = [
-  { keys: ['W', 'A', 'S', 'D'], action: 'Moverse por el museo' },
-  { keys: ['Mouse'], action: 'Mirar alrededor' },
-  { keys: ['Clic'], action: 'Ver la ficha de un artefacto' },
-  { keys: ['M'], action: 'Mostrar u ocultar el mapa' },
-  { keys: ['Esc'], action: 'Pausar y liberar el cursor' },
-];
-
-function LoadingBar({ progress }) {
-  return (
-    <div className="welcome__loading">
-      <div
-        className="welcome__progress"
-        role="progressbar"
-        aria-label="Cargando el museo"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={progress}
-      >
-        <div
-          className="welcome__progress-fill"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-      <p>Cargando el museo… {progress}%</p>
-    </div>
-  );
-}
+/** Nombre corto de la sala para el recorrido («Sala de la Colonia» → «Colonia»). */
+const shortName = (name) => name.replace(/^Sala (de la )?/, '');
 
 /**
- * Pantalla de bienvenida: explica los controles mientras la escena carga
- * (con barra de progreso) y, al terminar, ofrece el botón «Entrar al museo».
+ * Pantalla de bienvenida: presenta el museo y su recorrido mientras la
+ * escena carga. Al terminar, el fondo se abre y deja ver el claustro detrás,
+ * y aparece «Entrar al museo».
  */
 export default function WelcomeScreen() {
   const hasEntered = useMuseumStore((s) => s.hasEntered);
@@ -45,45 +22,57 @@ export default function WelcomeScreen() {
 
   return (
     <div
-      className="welcome"
+      className={isSceneReady ? 'welcome welcome--ready' : 'welcome'}
       role="dialog"
       aria-modal="true"
       aria-labelledby="welcome-title"
     >
-      <div className="welcome__panel">
-        <h1 id="welcome-title">Museo Interactivo 3D de Colombia</h1>
+      <div className="welcome__content">
+        <h1 id="welcome-title" className="welcome__title">
+          Museo Interactivo 3D de Colombia
+        </h1>
         <p className="welcome__intro">
-          Recorre las salas Precolombina, de la Colonia, de la Independencia y
-          de la República.
+          Cuatro salas alrededor de un patio, de la orfebrería precolombina a la
+          República. Recórrelas en el orden de la historia.
         </p>
 
-        <h2>Controles</h2>
-        <ul className="welcome__controls">
-          {CONTROLS.map(({ keys, action }) => (
-            <li key={action}>
-              <span className="welcome__keys">
-                {keys.map((key) => (
-                  <kbd key={key}>{key}</kbd>
-                ))}
-              </span>
-              <span>{action}</span>
+        <ol className="route" aria-label="Recorrido">
+          {ROOMS.map((room) => (
+            <li key={room.id} style={{ '--room-color': room.color }}>
+              <span className="route__name">{shortName(room.name)}</span>
+              <span className="route__period">{room.period}</span>
             </li>
           ))}
-        </ul>
+        </ol>
 
-        {isSceneReady ? (
-          <button
-            type="button"
-            className="welcome__enter"
-            onClick={enterMuseum}
-            autoFocus
-          >
-            Entrar al museo
-          </button>
-        ) : (
-          <LoadingBar progress={progress} />
-        )}
+        <div className="welcome__actions">
+          {isSceneReady ? (
+            <button
+              type="button"
+              className="button button--primary welcome__enter"
+              onClick={enterMuseum}
+              autoFocus
+            >
+              Entrar al museo
+            </button>
+          ) : (
+            <p className="welcome__status" aria-live="polite">
+              Preparando las salas, {progress} %
+            </p>
+          )}
+          <ControlsList className="welcome__controls" />
+        </div>
       </div>
+
+      <div
+        className="welcome__progress"
+        role="progressbar"
+        aria-label="Cargando el museo"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+        style={{ '--progress': progress / 100 }}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { getRoomById } from '../../data/rooms';
 import {
   useMuseumStore,
   selectSelectedArtifact,
@@ -29,25 +30,43 @@ export default function ArtifactCard() {
 
   if (!isOpen) return null;
 
+  const room = getRoomById(artifact.roomId);
+
   return (
     <aside
-      className="artifact-card"
+      className="sheet"
       role="dialog"
       aria-labelledby="artifact-card-title"
+      style={{ '--room-color': room.color }}
     >
-      <h2 id="artifact-card-title">{artifact.name}</h2>
-      <dl>
-        <dt>Época</dt>
-        <dd>{artifact.period}</dd>
-        <dt>Cultura</dt>
-        <dd>{artifact.culture}</dd>
+      <h2 id="artifact-card-title" className="sheet__title">
+        {artifact.name}
+      </h2>
+      <dl className="sheet__facts">
+        <div>
+          <dt>Cultura</dt>
+          <dd>{artifact.culture}</dd>
+        </div>
+        <div>
+          <dt>Época</dt>
+          <dd>{artifact.period}</dd>
+        </div>
       </dl>
-      <p>{artifact.description}</p>
-      <div className="artifact-card__actions">
-        <button type="button" onClick={startInspection}>
+      <p className="sheet__description">{artifact.description}</p>
+      <div className="sheet__actions">
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={startInspection}
+          autoFocus
+        >
           Inspeccionar en 3D
         </button>
-        <button type="button" onClick={clearSelection}>
+        <button
+          type="button"
+          className="button button--quiet"
+          onClick={clearSelection}
+        >
           Cerrar
         </button>
       </div>

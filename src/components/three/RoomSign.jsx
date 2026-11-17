@@ -1,50 +1,78 @@
 import { Text } from '@react-three/drei';
-import fontUrl from '@fontsource/cinzel/files/cinzel-latin-600-normal.woff?url';
-import { DOOR_HEIGHT, WALL_HEIGHT, getDoor } from '../../scene/layout';
+import nameFontUrl from '@fontsource/newsreader/files/newsreader-latin-500-normal.woff?url';
+import numberFontUrl from '@fontsource/newsreader/files/newsreader-latin-400-italic.woff?url';
+import {
+  DOORS,
+  getRoomCenter,
+  getRoomNumber,
+  getSpaceAt,
+} from '../../data/rooms';
+import { DOOR_HEIGHT, GALLERY_HEIGHT } from '../../scene/layout';
+import { PALETTE } from '../../scene/palette';
 
-const SIGN_WIDTH = 2.8;
-const SIGN_HEIGHT = 1.1;
-// Separación del letrero respecto al eje del muro (medio grosor + holgura)
-const WALL_CLEARANCE = 0.13;
+// Las letras van pintadas sobre el muro, apenas separadas de su cara
+const WALL_CLEARANCE = 0.105;
+const SIGN_Y = (DOOR_HEIGHT + GALLERY_HEIGHT) / 2 + 0.02;
+// El número queda a la izquierda del eje de la puerta y el nombre a la derecha
+const GUTTER = 0.12;
 
 /**
- * Señalética 3D de una sala: placa sobre el dintel de su puerta, del lado del
- * pasillo, con el nombre y el periodo histórico.
+ * Señalética de una sala: rotulada sobre el muro, encima de la puerta por la
+ * que se entra en el recorrido y del lado de afuera. Sobre muros encalados
+ * usa el color de la sala; sobre el muro de otra sala, cal.
  */
 export default function RoomSign({ room }) {
-  const door = getDoor(room);
-  const position = [
-    door.x + door.facing * WALL_CLEARANCE,
-    (DOOR_HEIGHT + WALL_HEIGHT) / 2,
-    door.z,
-  ];
+  const door = DOORS.find((d) => d.entrance === room.id);
+  const center = getRoomCenter(room);
+  // Dirección desde el muro hacia afuera de la sala
+  const outward =
+    door.axis === 'x'
+      ? Math.sign(door.at - center.x)
+      : Math.sign(door.at - center.z);
+  const across = door.at + outward * WALL_CLEARANCE;
+  const position =
+    door.axis === 'x'
+      ? [across, SIGN_Y, door.center]
+      : [door.center, SIGN_Y, across];
+  // El texto mira hacia +z; se gira para que mire hacia afuera de la sala
+  const rotationY =
+    door.axis === 'x' ? (outward * Math.PI) / 2 : outward > 0 ? 0 : Math.PI;
+
+  const outside =
+    door.axis === 'x'
+      ? { x: door.at + outward * 0.5, z: door.center }
+      : { x: door.center, z: door.at + outward * 0.5 };
+  const isOnRoomWall = Boolean(getSpaceAt(outside)?.color);
+  const color = isOnRoomWall ? PALETTE.cal : room.color;
 
   return (
-    <group position={position} rotation={[0, (door.facing * Math.PI) / 2, 0]}>
-      <mesh>
-        <boxGeometry args={[SIGN_WIDTH, SIGN_HEIGHT, 0.04]} />
-        <meshStandardMaterial color="#1d1d1d" />
-      </mesh>
-      {/* El nombre crece hacia arriba si ocupa dos líneas; el periodo va debajo */}
+    <group position={position} rotation={[0, rotationY, 0]}>
       <Text
-        font={fontUrl}
-        position={[0, -0.04, 0.03]}
+        font={numberFontUrl}
+        position={[-GUTTER, 0, 0]}
+        fontSize={0.62}
+        color={color}
+        anchorX="right"
+        anchorY="middle"
+      >
+        {getRoomNumber(room.id)}
+      </Text>
+      <Text
+        font={nameFontUrl}
+        position={[GUTTER, 0.02, 0]}
         fontSize={0.2}
-        lineHeight={1.1}
-        maxWidth={SIGN_WIDTH - 0.2}
-        textAlign="center"
-        color="#d4af37"
-        anchorX="center"
+        color={color}
+        anchorX="left"
         anchorY="bottom"
       >
         {room.name}
       </Text>
       <Text
-        font={fontUrl}
-        position={[0, -0.14, 0.03]}
-        fontSize={0.16}
-        color="#f4efe6"
-        anchorX="center"
+        font={numberFontUrl}
+        position={[GUTTER, -0.04, 0]}
+        fontSize={0.13}
+        color={color}
+        anchorX="left"
         anchorY="top"
       >
         {room.period}

@@ -1,7 +1,40 @@
+/*
+ * Sistema visual del museo.
+ *
+ * Color: el índigo profundo de la sala de orfebrería (fondo de todos los
+ * paneles), la cal de los muros del claustro (texto) y la tumbaga, la
+ * aleación de oro y cobre de los orfebres precolombinos, reservada para lo
+ * que se puede accionar. Cada sala aporta su propio color (data/rooms.js).
+ *
+ * Tipografía: Newsreader para todo lo que se lee como en las paredes de un
+ * museo (títulos, cédulas, descripciones) y Archivo para lo que se opera
+ * (botones, controles, indicaciones). Escala de tercera mayor (1,25).
+ */
 :root {
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  color: #f4efe6;
-  background: #0d0d0d;
+  --indigo: #18213a;
+  --indigo-deep: #10172a;
+  --cal: #ece8de;
+  --cal-soft: rgb(236 232 222 / 0.68);
+  --cal-faint: rgb(236 232 222 / 0.16);
+  --tumbaga: #c9a24a;
+  --tumbaga-bright: #ddb862;
+
+  --serif: 'Newsreader Variable', Georgia, serif;
+  --sans: 'Archivo Variable', 'Segoe UI', sans-serif;
+
+  --step--1: 0.8rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.563rem;
+  --step-3: 1.953rem;
+  --step-4: 2.441rem;
+  --step-5: 3.052rem;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--sans);
+  color: var(--cal);
+  background: var(--indigo-deep);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,4 +50,18 @@ body,
 #root {
   margin: 0;
   height: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--tumbaga-bright);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

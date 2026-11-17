@@ -15,6 +15,19 @@ describe('threeConsole', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
+  it('omite las advertencias del compilador de shaders, no sus errores', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    threeConsole(
+      'warn',
+      'THREE.WebGLProgram: Program Info Log: warning X3595: gradient instruction used in a loop'
+    );
+    threeConsole('error', 'THREE.WebGLProgram: Shader Error 0');
+
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalledWith('THREE.WebGLProgram: Shader Error 0');
+  });
+
   it('deja pasar las demás advertencias y errores', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});

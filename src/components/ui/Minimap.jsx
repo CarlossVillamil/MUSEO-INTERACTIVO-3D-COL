@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { CORRIDOR, MUSEUM_BOUNDS, ROOMS } from '../../data/rooms';
+import {
+  COMMON_AREAS,
+  DOORS,
+  MUSEUM_BOUNDS,
+  ROOMS,
+  getRoomCenter,
+  getRoomNumber,
+} from '../../data/rooms';
 import { useMuseumStore } from '../../store/useMuseumStore';
 
 const toRect = ({ minX, maxX, minZ, maxZ }) => ({
@@ -9,53 +16,74 @@ const toRect = ({ minX, maxX, minZ, maxZ }) => ({
   height: maxZ - minZ,
 });
 
-const shortName = (name) => name.replace(/^Sala (de la )?/, '');
+/** Vano como línea sobre el plano (para «abrir» el contorno de los espacios). */
+const doorLine = ({ axis, at, center, width }) =>
+  axis === 'x'
+    ? { x1: at, y1: center - width / 2, x2: at, y2: center + width / 2 }
+    : { x1: center - width / 2, y1: at, x2: center + width / 2, y2: at };
 
-/** Plano 2D del museo visto desde arriba con la ubicación del visitante. */
+/** Plano del museo visto desde arriba, con la ubicación del visitante. */
 function MinimapPanel() {
   const playerPosition = useMuseumStore((s) => s.playerPosition);
   const currentRoomId = useMuseumStore((s) => s.currentRoomId);
   const { x, y, width, height } = toRect(MUSEUM_BOUNDS);
+  const patio = COMMON_AREAS.find((area) => area.openSky);
+  const fountain = getRoomCenter(patio);
 
   return (
-    <aside className="minimap" aria-label="Mapa del museo">
+    <aside className="plan" aria-label="Plano del museo">
       <svg viewBox={`${x - 1} ${y - 1} ${width + 2} ${height + 2}`}>
-        <rect className="minimap__corridor" {...toRect(CORRIDOR)} />
+        {COMMON_AREAS.map((area) => (
+          <rect
+            key={area.id}
+            className="plan__common"
+            {...toRect(area.bounds)}
+          />
+        ))}
+        <circle
+          className="plan__fountain"
+          cx={fountain.x}
+          cy={fountain.z}
+          r={1.5}
+        />
         {ROOMS.map((room) => {
           const rect = toRect(room.bounds);
+          const isCurrent = room.id === currentRoomId;
           return (
             <g key={room.id}>
               <rect
                 className={
-                  room.id === currentRoomId
-                    ? 'minimap__room minimap__room--current'
-                    : 'minimap__room'
+                  isCurrent ? 'plan__room plan__room--current' : 'plan__room'
                 }
+                style={{ fill: room.color }}
                 {...rect}
               />
               <text
-                className="minimap__label"
+                className="plan__number"
                 x={rect.x + rect.width / 2}
                 y={rect.y + rect.height / 2}
               >
-                {shortName(room.name)}
+                {getRoomNumber(room.id)}
               </text>
             </g>
           );
         })}
+        {DOORS.map((door, i) => (
+          <line key={i} className="plan__door" {...doorLine(door)} />
+        ))}
         <circle
-          className="minimap__player"
+          className="plan__visitor"
           cx={playerPosition.x}
           cy={playerPosition.z}
-          r={0.7}
+          r={0.8}
         />
       </svg>
-      <p>M para cerrar</p>
+      <p>Pulsa M para cerrar el plano</p>
     </aside>
   );
 }
 
-/** Minimapa que se muestra u oculta con la tecla M. */
+/** Plano que se muestra u oculta con la tecla M. */
 export default function Minimap() {
   const isMapOpen = useMuseumStore((s) => s.isMapOpen);
   const toggleMap = useMuseumStore((s) => s.toggleMap);
@@ -63,7 +91,7 @@ export default function Minimap() {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code !== 'KeyM' || event.repeat) return;
-      // El mapa solo está disponible dentro del museo, no en la bienvenida
+      // El plano solo está disponible dentro del museo, no en la bienvenida
       if (useMuseumStore.getState().hasEntered) toggleMap();
     };
     window.addEventListener('keydown', handleKeyDown);

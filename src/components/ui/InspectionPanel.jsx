@@ -27,15 +27,25 @@ export default function InspectionPanel() {
   if (!isOpen) return null;
 
   return (
-    <div className="inspection-panel" role="toolbar" aria-label="Inspección">
-      <h2>{artifact.name}</h2>
-      <p>Arrastra para girar · Rueda del mouse para acercar o alejar</p>
-      <div className="inspection-panel__actions">
-        <button type="button" onClick={resetInspectionView}>
-          Restablecer vista
-        </button>
-        <button type="button" onClick={stopInspection}>
+    <div className="inspection" role="toolbar" aria-label="Inspección">
+      <h2 className="inspection__title">{artifact.name}</h2>
+      <p className="inspection__hint">
+        Arrastra para girar la pieza. Usa la rueda para acercarla o alejarla.
+      </p>
+      <div className="inspection__actions">
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={stopInspection}
+        >
           Volver a la ficha
+        </button>
+        <button
+          type="button"
+          className="button button--quiet"
+          onClick={resetInspectionView}
+        >
+          Restablecer vista
         </button>
       </div>
     </div>

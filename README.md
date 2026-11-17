@@ -85,7 +85,7 @@ Ficha 2D (components/ui/ArtifactCard)
 | `loadProgress`       | `setLoadProgress(p)`                     |
 | `isSceneReady`       | `markSceneReady()`                       |
 | `hasEntered`         | `enterMuseum()`                          |
-| `currentRoomId`      | `enterRoom(id)` (null = pasillo)         |
+| `currentRoomId`      | `enterRoom(id)` (null = fuera de salas)  |
 | `playerPosition`     | `setPlayerPosition(x, z)`                |
 | `isMapOpen`          | `toggleMap()`                            |
 | `selectedArtifactId` | `selectArtifact(id)`, `clearSelection()` |
@@ -100,27 +100,34 @@ Reglas:
 
 - La escena se envuelve en `<Suspense>`: `SceneReady` solo se monta cuando todos los recursos (fuente de la señalética, modelos…) terminaron de cargar, y entonces marca `isSceneReady`.
 - `LoadingTracker` publica el porcentaje de `useProgress` (loaders de three.js) en `loadProgress`.
-- `WelcomeScreen` muestra los controles con una barra de progreso mientras carga y, al terminar, el botón «Entrar al museo». Ese clic también captura el cursor: `Player` gestiona la captura y solo la permite después de entrar.
+- `WelcomeScreen` presenta el museo, el recorrido y los controles con una línea de progreso mientras carga; al terminar, el fondo se abre y deja ver el claustro, y aparece «Entrar al museo». Ese clic también captura el cursor: `Player` gestiona la captura y solo la permite después de entrar.
 
-### Distribución del museo
+### Distribución del museo: un claustro
 
-Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden cronológico:
+Las salas rodean un patio abierto con una fuente, como las casas coloniales donde funcionan muchos museos colombianos. El recorrido es cronológico y gira alrededor del patio:
 
 ```
-        ┌──────────────┬────┬──────────────┐
-        │ Independencia│    │  República   │
-        │  1810–1819   ▯    ▯ 1819–presente│
-        ├──────────────┤    ├──────────────┤
-        │ Precolombina │    │   Colonia    │
-        │ antes de 1499▯    ▯  1550–1810   │
-        └──────────────┤    ├──────────────┘
-                       │ ●  │  ● inicio
-                       └────┘
+        ┌──────────────┬──────────────┐
+        │ 2 Colonia    ▯ 3 Independ.  │
+        ├──────▯───────┼──────▯───────┼──────────────┐
+        │ 1 Precolomb. ▯    Patio     ▯ 4 República  │
+        └──────────────┼─────    ─────┼──────────────┘
+                       │  Vestíbulo ● │  ● inicio
+                       └──────────────┘
 ```
 
-- La distribución (límites de cada sala, pasillo y lado de la puerta) vive en `data/rooms.js`; los muros, vanos y dinteles se generan con `scene/layout.js`.
-- Cada sala tiene su señalética 3D (`RoomSign`) sobre el dintel de la puerta, del lado del pasillo. Usa la fuente local Cinzel (`@fontsource/cinzel`), elegida porque no tiene reglas tipográficas que troika-three-text no soporte (evita mensajes en consola).
-- Al cruzar una puerta, `Player` publica la sala en el store y `RoomBanner` muestra su nombre y periodo durante 3 segundos. La tecla `M` abre el minimapa con la posición actual.
+- `data/rooms.js` define los espacios (`COMMON_AREAS`: vestíbulo y patio; `ROOMS`: las salas, cada una con el color de sus muros) y los vanos (`DOORS`). `entrance` marca la puerta por la que se entra a cada sala siguiendo el recorrido.
+- `scene/layout.js` genera los muros a partir de los espacios: cada tramo sabe qué espacio tiene a cada lado para pintar cada cara con su color, y los vanos lo cortan dejando un dintel. También ubica las vitrinas contra los muros sin tapar las puertas (primero el muro frente a la entrada) y las 12 columnas de la galería del patio.
+- `MuseumShell` construye pisos, techos, muros (cal con zócalo verde en la circulación; color de periodo en las salas), la galería con columnas y la fuente. Las texturas de baldosa, piedra, concreto y cal se dibujan en un canvas al cargar (`scene/textures.js`).
+- Cada sala tiene su rótulo (`RoomSign`) pintado sobre el muro, encima de su puerta de entrada y del lado de afuera: número del recorrido, nombre y periodo, en Newsreader (archivo .woff local, compatible con troika-three-text).
+- Al cruzar una puerta, `Player` publica la sala en el store y `RoomBanner` muestra su número, nombre y periodo durante unos segundos. La tecla `M` abre el plano con la posición actual.
+
+### Sistema visual
+
+- **Color** (`src/index.css`): índigo profundo para los paneles, cal para el texto y tumbaga (la aleación de oro y cobre de los orfebres) solo para lo que se puede accionar. Cada sala aporta su color (`data/rooms.js`), que se repite en el recorrido de la bienvenida, el plano y el filo de la ficha.
+- **Tipografía**: Newsreader (variable, con tamaño óptico) para títulos y textos de lectura; Archivo para botones, controles e indicaciones. Escala de tercera mayor.
+- **Escena**: mapeo de tonos neutro y oclusión ambiental (`scene/PostEffects.jsx`, N8AO), cámara de 60° y luz de día sobre el patio (`PatioLight`).
+- La interfaz respeta `prefers-reduced-motion`, muestra el foco del teclado y se adapta a pantallas angostas.
 
 ### Ficha técnica
 
@@ -138,7 +145,7 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 ### Modo de inspección
 
 - Desde la ficha, «Inspeccionar en 3D» activa `isInspecting` en el store. `scene/InspectionScene` abre un lienzo propio sobre el museo con la pieza aislada y centrada (`InspectedArtifact`, normalizada a 1 m).
-- `OrbitControls`: arrastrar rota la pieza y la rueda acerca o aleja entre 1,2 m y 4 m (sin desplazamiento lateral). «Restablecer vista» incrementa `inspectionResetCount` y los controles vuelven a la vista inicial.
+- `OrbitControls`: arrastrar rota la pieza y la rueda acerca o aleja entre 1 m y 3,4 m (sin desplazamiento lateral). «Restablecer vista» incrementa `inspectionResetCount` y los controles vuelven a la vista inicial.
 - «Volver a la ficha» o `Esc` terminan la inspección. Al cerrar la ficha también termina.
 
 ### Luces de las vitrinas
@@ -148,7 +155,7 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 
 ### Artefactos en las vitrinas
 
-- El catálogo `src/data/artifacts.js` define cada pieza: sala, ficha, modelo GLB, preset de material, tamaño de exhibición y crédito del modelo. El orden dentro de cada sala define su vitrina (`getExhibitSlots` en `scene/layout.js`: 9 vitrinas por sala, orientadas hacia la entrada).
+- El catálogo `src/data/artifacts.js` define cada pieza: sala, ficha, modelo GLB, preset de material, tamaño de exhibición y crédito del modelo. El orden dentro de cada sala define su vitrina (`getExhibitSlots` en `scene/layout.js`: contra los muros, orientadas hacia el centro de la sala).
 - `Artifact` carga el modelo con `useGLTF`, lo ajusta al tamaño de exhibición y aplica su material (`scene/materials.js`):
 
 | Preset     | Uso                                                |
@@ -168,16 +175,17 @@ Campos opcionales: `tint` (color uniforme que reemplaza la textura), `rotation` 
 
 ### Iluminación de vitrinas
 
-Cada vitrina (`Exhibit`) tiene un spotlight propio que proyecta la sombra del artefacto sobre su base. Su intensidad sube de forma gradual cuando el visitante está a menos de 3 m (`scene/proximity.js`).
+Cada vitrina de la sala actual recibe un spotlight (`ExhibitLights`) que proyecta la sombra del artefacto sobre su base. Su intensidad sube de forma gradual cuando el visitante está a menos de 3 m (`scene/proximity.js`).
 
 ### Advertencias de dependencias
 
 `src/lib/threeConsole.js` filtra, mediante la API oficial `setConsoleFunction` de three.js, solo las advertencias causadas por dependencias que no podemos corregir:
 
 - `THREE.Clock` deprecado: lo crea internamente `@react-three/fiber` 9.x. Eliminar el filtro al actualizar a la v10.
+- Advertencias del compilador de shaders en Windows (`Program Info Log`) sobre shaders de terceros, como el de N8AO. Los errores de compilación no se filtran.
 
 ### Agregar una sala
 
-1. Registrar la sala en `src/data/rooms.js` y sus artefactos en `src/data/artifacts.js`.
-2. Crear `src/rooms/NombreSala/NombreSala.jsx` usando el contenedor `Room` (aporta la señalética y posiciona las vitrinas relativas al centro de la sala).
+1. Registrar la sala (límites, color y vanos) en `src/data/rooms.js` y sus artefactos en `src/data/artifacts.js`.
+2. Crear `src/rooms/NombreSala/NombreSala.jsx` usando el contenedor `Room` (aporta el rótulo y posiciona las vitrinas contra los muros).
 3. Registrar el componente en `src/rooms/index.js`.

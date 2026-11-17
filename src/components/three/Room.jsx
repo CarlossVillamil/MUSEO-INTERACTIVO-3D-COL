@@ -17,7 +17,12 @@ export default function Room({ roomId }) {
     <group name={roomId}>
       <RoomSign room={room} />
       {artifacts.map((artifact, i) => (
-        <Exhibit key={artifact.id} artifact={artifact} slot={slots[i]} />
+        <Exhibit
+          key={artifact.id}
+          artifact={artifact}
+          slot={slots[i]}
+          color={room.color}
+        />
       ))}
     </group>
   );

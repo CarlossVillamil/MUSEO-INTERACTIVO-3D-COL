@@ -7,7 +7,7 @@ import {
   getTargetIntensity,
 } from '../../scene/proximity';
 
-const LIGHT_LEVELS = { near: 30, far: 8 };
+const LIGHT_LEVELS = { near: 140, far: 60 };
 
 const exhibitPosition = new Vector3();
 
@@ -63,9 +63,9 @@ export default function ExhibitLight({ placement }) {
         ref={lightRef}
         target={target}
         intensity={0}
-        angle={0.4}
-        penumbra={0.5}
-        distance={6}
+        angle={0.5}
+        penumbra={0.7}
+        distance={7}
         castShadow
         shadow-autoUpdate={false}
         shadow-mapSize={[512, 512]}
