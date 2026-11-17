@@ -28,6 +28,8 @@ describe('catálogo de artefactos', () => {
   it('cada artefacto tiene ficha, material válido, tamaño y crédito', () => {
     ARTIFACTS.forEach((artifact) => {
       expect(artifact.name, artifact.id).toBeTruthy();
+      expect(artifact.period, artifact.id).toBeTruthy();
+      expect(artifact.culture, artifact.id).toBeTruthy();
       expect(artifact.description, artifact.id).toBeTruthy();
       expect(MATERIAL_PRESETS, artifact.id).toHaveProperty(artifact.material);
       expect(artifact.size, artifact.id).toBeGreaterThan(0);

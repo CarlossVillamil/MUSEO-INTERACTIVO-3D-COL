@@ -17,6 +17,15 @@ const NO_AUTO_LOCK = '#no-auto-pointer-lock';
 
 const direction = new Vector3();
 
+/**
+ * Captura el cursor. Si el navegador lo rechaza (p. ej. sin un gesto del
+ * visitante) se queda en pausa y el siguiente clic lo vuelve a intentar.
+ */
+function requestLock(controls) {
+  if (!controls || controls.isLocked) return;
+  controls.domElement.requestPointerLock()?.catch?.(() => {});
+}
+
 /** Publica en el store la sala actual y la posición del visitante. */
 function syncPlayerState({ x, z }) {
   const { currentRoomId, playerPosition, enterRoom, setPlayerPosition } =
@@ -32,8 +41,8 @@ function syncPlayerState({ x, z }) {
 /**
  * Visitante en primera persona: tras entrar al museo, un clic captura el
  * cursor, el mouse rota la vista y W/A/S/D desplazan la cámara.
- * Al liberar el cursor (Esc) avisa al store para mostrar la pausa, y en cada
- * cuadro publica en qué sala se encuentra y su posición.
+ * Al liberar el cursor (Esc o al abrir una ficha) avisa al store de la pausa,
+ * y en cada cuadro publica en qué sala se encuentra y su posición.
  */
 export default function Player() {
   const controlsRef = useRef(null);
@@ -43,13 +52,30 @@ export default function Player() {
 
   // El clic en «Entrar al museo» actualiza el store antes de llegar al
   // documento, así que ese mismo clic ya captura el cursor
+  // Con la ficha técnica abierta el clic es para la ficha, no para recapturar
   useEffect(() => {
     const handleClick = () => {
-      if (useMuseumStore.getState().hasEntered) controlsRef.current?.lock();
+      const { hasEntered, selectedArtifactId } = useMuseumStore.getState();
+      if (hasEntered && !selectedArtifactId) requestLock(controlsRef.current);
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
   }, []);
+
+  // Al abrir una ficha se libera el cursor y la navegación queda en pausa;
+  // al cerrarla (Esc o Cerrar) se recaptura y el recorrido sigue desde la
+  // misma posición, porque la cámara no se movió mientras tanto
+  useEffect(
+    () =>
+      useMuseumStore.subscribe((state, previous) => {
+        if (state.selectedArtifactId && !previous.selectedArtifactId) {
+          controlsRef.current?.unlock();
+        } else if (!state.selectedArtifactId && previous.selectedArtifactId) {
+          requestLock(controlsRef.current);
+        }
+      }),
+    []
+  );
 
   useFrame((state, delta) => {
     if (!controlsRef.current?.isLocked) return;

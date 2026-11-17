@@ -43,6 +43,8 @@ Pasos aplicados: conversión de materiales _spec/gloss_ a _metal/rough_ (three.j
 | Capturar el cursor | Clic sobre la escena                        |
 | Moverse            | `W` `A` `S` `D`                             |
 | Mirar alrededor    | Mouse                                       |
+| Ver ficha técnica  | Apuntar a una vitrina con la mira y clic    |
+| Cerrar ficha       | `Esc` o botón «Cerrar»                      |
 | Pausar / liberar   | `Esc`                                       |
 | Mostrar mapa       | `M`                                         |
 
@@ -119,6 +121,12 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 - La distribución (límites de cada sala, pasillo y lado de la puerta) vive en `data/rooms.js`; los muros, vanos y dinteles se generan con `scene/layout.js`.
 - Cada sala tiene su señalética 3D (`RoomSign`) sobre el dintel de la puerta, del lado del pasillo. Usa la fuente local Cinzel (`@fontsource/cinzel`), elegida porque no tiene reglas tipográficas que troika-three-text no soporte (evita mensajes en consola).
 - Al cruzar una puerta, `Player` publica la sala en el store y `RoomBanner` muestra su nombre y periodo durante 3 segundos. La tecla `M` abre el minimapa con la posición actual.
+
+### Ficha técnica
+
+- Con el cursor capturado no hay puntero en pantalla: el visitante apunta con la mira del centro (`Crosshair`). `MuseumScene` lanza los rayos de los clics desde el centro de la vista, con un alcance de 4 m, y `Artifact` solo responde si la pieza está en la sala actual (los rayos no se detienen en los muros).
+- Al seleccionar una pieza, `Player` libera el cursor: la navegación queda en pausa (sin mostrar el menú de pausa) y `ArtifactCard` muestra nombre, época, cultura y descripción (`period` y `culture` del catálogo).
+- `Esc` o «Cerrar» limpian la selección y `Player` vuelve a capturar el cursor: el recorrido sigue desde la misma posición. Si el navegador rechaza la captura, aparece la pausa y un clic la retoma.
 
 ### Artefactos en las vitrinas
 

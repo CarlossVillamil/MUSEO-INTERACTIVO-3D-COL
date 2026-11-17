@@ -30,8 +30,11 @@ export default function Artifact({ artifact, position }) {
     };
   }, [scene, artifact]);
 
+  // Solo se abren las fichas de la sala en la que está el visitante
+  // (el rayo del clic no se detiene en los muros)
   const handleClick = (event) => {
     event.stopPropagation();
+    if (useMuseumStore.getState().currentRoomId !== artifact.roomId) return;
     selectArtifact(artifact.id);
   };
 

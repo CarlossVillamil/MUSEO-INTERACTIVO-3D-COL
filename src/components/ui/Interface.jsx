@@ -1,4 +1,5 @@
 import ArtifactCard from './ArtifactCard';
+import Crosshair from './Crosshair';
 import Minimap from './Minimap';
 import PauseMenu from './PauseMenu';
 import RoomBanner from './RoomBanner';
@@ -10,6 +11,7 @@ export default function Interface() {
     <div className="interface">
       <RoomBanner />
       <Minimap />
+      <Crosshair />
       <ArtifactCard />
       <PauseMenu />
       <WelcomeScreen />

@@ -1,6 +1,7 @@
 /**
  * Catálogo de artefactos exhibidos en las vitrinas.
  *
+ * - `period` y `culture`: época y cultura que muestra la ficha técnica.
  * - `model`: GLB optimizado (`pnpm optimize:models`) dentro de `public/models/`.
  * - `material`: preset PBR que se aplica sobre las texturas del modelo
  *   (ver `scene/materials.js`); `tint` lo reemplaza por un color uniforme.
@@ -17,6 +18,8 @@ export const ARTIFACTS = [
     id: 'pechera-tairona',
     roomId: 'sala-precolombina',
     name: 'Pechera tairona',
+    period: '900 – 1600 d.C.',
+    culture: 'Tairona',
     description:
       'Pectoral de orfebrería tairona con espirales, de la Sierra Nevada de Santa Marta.',
     model: 'pre-colombina/tairona_-_pechera_de_oro.glb',
@@ -34,6 +37,8 @@ export const ARTIFACTS = [
     id: 'popora-de-oro',
     roomId: 'sala-precolombina',
     name: 'Poporo de oro',
+    period: '300 a.C. – 600 d.C.',
+    culture: 'Quimbaya',
     description:
       'Recipiente para la cal que se mezclaba con la hoja de coca en rituales (recreación).',
     model: 'pre-colombina/popora_de_oro.glb',
@@ -49,6 +54,8 @@ export const ARTIFACTS = [
     id: 'balsa-muisca',
     roomId: 'sala-precolombina',
     name: 'Balsa Muisca (representación)',
+    period: '600 – 1600 d.C.',
+    culture: 'Muisca',
     description:
       'Evoca la balsa ceremonial muisca de la laguna de Guatavita, origen de la leyenda de El Dorado.',
     model: 'pre-colombina/balsa.glb',
@@ -65,6 +72,8 @@ export const ARTIFACTS = [
     id: 'nariguera-tairona',
     roomId: 'sala-precolombina',
     name: 'Nariguera zoomorfa tairona',
+    period: '900 – 1600 d.C.',
+    culture: 'Tairona',
     description: 'Adorno nasal de oro con forma animal (900 – 1600 d.C.).',
     model: 'pre-colombina/tairona_-_nariguera_zoomorfa.glb',
     material: 'oro',
@@ -79,6 +88,8 @@ export const ARTIFACTS = [
     id: 'colgante-antropomorfo-tairona',
     roomId: 'sala-precolombina',
     name: 'Colgante antropomorfo tairona',
+    period: '900 – 1600 d.C.',
+    culture: 'Tairona',
     description: 'Colgante de oro con figura humana de la cultura tairona.',
     model: 'pre-colombina/tairona_culture_anthropomorphic_pendant.glb',
     material: 'oro',
@@ -94,6 +105,8 @@ export const ARTIFACTS = [
     id: 'colgante-murcielago-tairona',
     roomId: 'sala-precolombina',
     name: 'Colgante murciélago tairona',
+    period: '900 – 1600 d.C.',
+    culture: 'Tairona',
     description: 'Colgante zoomorfo de oro con forma de murciélago.',
     model: 'pre-colombina/tairona_culture_zoomorphic_pendant__bat.glb',
     material: 'oro',
@@ -108,6 +121,8 @@ export const ARTIFACTS = [
     id: 'tunjo-muisca',
     roomId: 'sala-precolombina',
     name: 'Tunjo muisca',
+    period: '600 – 1600 d.C.',
+    culture: 'Muisca',
     description:
       'Figura votiva que se ofrendaba en rituales del altiplano cundiboyacense (recreación).',
     model: 'pre-colombina/tunjo_precolombino.glb',
@@ -123,6 +138,8 @@ export const ARTIFACTS = [
     id: 'remate-baston-zenu',
     roomId: 'sala-precolombina',
     name: 'Remate de bastón zenú',
+    period: '200 a.C. – 1000 d.C.',
+    culture: 'Zenú',
     description:
       'Remate de bastón de orfebrería zenú con forma animal (200 a.C. – 1000 d.C.).',
     model: 'pre-colombina/zenu_-_remate_de_baston_horizontal_zoomorfo.glb',
@@ -138,6 +155,8 @@ export const ARTIFACTS = [
     id: 'instrumento-zoomorfo',
     roomId: 'sala-precolombina',
     name: 'Instrumento musical zoomorfo',
+    period: '900 – 1600 d.C.',
+    culture: 'Tairona',
     description:
       'Instrumento cerámico con forma animal de la tradición tairona.',
     model: 'pre-colombina/instrumento_musical_zoomorfo.glb',
@@ -155,6 +174,8 @@ export const ARTIFACTS = [
     id: 'morrion-espanol',
     roomId: 'sala-colonia',
     name: 'Morrión español',
+    period: 'Siglos XVI – XVII',
+    culture: 'Española',
     description:
       'Casco de infantería con cresta y ala curva, típico de los soldados españoles de los siglos XVI y XVII.',
     model: 'colonial/spanish_morion_helmet.glb',
@@ -170,6 +191,8 @@ export const ARTIFACTS = [
     id: 'mosquete-colonial',
     roomId: 'sala-colonia',
     name: 'Mosquete de soldado colonial',
+    period: 'Siglo XVIII',
+    culture: 'Española',
     description:
       'Réplica de mosquete de chispa del siglo XVIII, como los de los soldados de la Corona española.',
     model: 'colonial/18th_century_musket_replica.glb',
@@ -185,6 +208,8 @@ export const ARTIFACTS = [
     id: 'botija',
     roomId: 'sala-colonia',
     name: 'Botija',
+    period: 'Siglos XVI – XVIII',
+    culture: 'Española',
     description:
       'Vasija para transportar aceite, vino y vinagre entre España y América (réplica).',
     model: 'colonial/botija_de_boca_de_vinagre.glb',
@@ -200,6 +225,8 @@ export const ARTIFACTS = [
     id: 'bacinilla-porcelana',
     roomId: 'sala-colonia',
     name: 'Bacinilla de porcelana',
+    period: 'c. 1789',
+    culture: 'Europea',
     description: 'Pieza doméstica de porcelana de la época colonial (c. 1789).',
     model: 'colonial/bacinilla_de_porcelana_antigua.glb',
     material: 'original',
@@ -216,6 +243,8 @@ export const ARTIFACTS = [
     id: 'virgen-maria',
     roomId: 'sala-colonia',
     name: 'Talla de la Virgen María',
+    period: 'Período colonial',
+    culture: 'Arte sacro colonial hispanoamericano',
     description:
       'Escultura religiosa colonial policromada (Guatemala), muestra del arte sacro de la época.',
     model: 'colonial/figure_of_the_virgin_mary.glb',
@@ -233,6 +262,8 @@ export const ARTIFACTS = [
     id: 'florero-de-llorente',
     roomId: 'sala-independencia',
     name: 'Florero de Llorente (representación)',
+    period: '1810',
+    culture: 'Criolla neogranadina',
     description:
       'El 20 de julio de 1810 el préstamo negado de un florero desencadenó la revuelta que inició la independencia.',
     model: 'independencia/florero_llorente.glb',
@@ -248,6 +279,8 @@ export const ARTIFACTS = [
     id: 'acta-de-independencia',
     roomId: 'sala-independencia',
     name: 'Acta de Independencia (representación)',
+    period: '1810',
+    culture: 'Criolla neogranadina',
     description:
       'Firmada por el Cabildo de Santa Fe en 1810, estableció la Junta Suprema de Gobierno.',
     model: 'independencia/acta_independencia.glb',
@@ -264,6 +297,8 @@ export const ARTIFACTS = [
     id: 'busto-bolivar',
     roomId: 'sala-independencia',
     name: 'Busto de Simón Bolívar',
+    period: 'Siglo XIX',
+    culture: 'Republicana',
     description:
       'El Libertador, líder de la campaña que culminó en la Batalla de Boyacá (1819).',
     model: 'independencia/simon_bolivar.glb',
@@ -279,6 +314,8 @@ export const ARTIFACTS = [
     id: 'escultura-bolivar',
     roomId: 'sala-independencia',
     name: 'Escultura de Simón Bolívar',
+    period: 'Siglo XIX',
+    culture: 'Republicana',
     description: 'Escaneo 3D de una escultura del Libertador.',
     model: 'independencia/simon_bolivar_scanner_3d_simplified_3d_mesh.glb',
     material: 'piedra',
@@ -293,6 +330,8 @@ export const ARTIFACTS = [
     id: 'sable-caballeria',
     roomId: 'sala-independencia',
     name: 'Sable de caballería ligera',
+    period: '1796 – 1820',
+    culture: 'Británica',
     description:
       'Sable modelo 1796, de la época de las guerras de independencia.',
     model: 'independencia/pattern_1796_light_cavalry_saber_trooper.glb',
@@ -308,6 +347,8 @@ export const ARTIFACTS = [
     id: 'bicornio',
     roomId: 'sala-independencia',
     name: 'Bicornio',
+    period: 'Finales del siglo XVIII – comienzos del XIX',
+    culture: 'Europea',
     description: 'Sombrero de dos picos que usaban los oficiales de la época.',
     model: 'independencia/bicorn_hat.glb',
     material: 'original',
@@ -323,6 +364,8 @@ export const ARTIFACTS = [
     id: 'mosquete-chispa',
     roomId: 'sala-independencia',
     name: 'Mosquete de chispa',
+    period: 'Comienzos del siglo XIX',
+    culture: 'Europea',
     description:
       'Arma de avancarga común en los ejércitos de comienzos del siglo XIX.',
     model: 'independencia/flintlock_musket_12858.glb',
@@ -338,6 +381,8 @@ export const ARTIFACTS = [
     id: 'pistola-chispa',
     roomId: 'sala-independencia',
     name: 'Pistola de chispa',
+    period: 'Siglos XVII – XIX',
+    culture: 'Europea',
     description:
       'Pistola de avancarga con mecanismo de chispa (siglos XVII – XIX).',
     model: 'independencia/flintlock_pistol.glb',
@@ -353,6 +398,8 @@ export const ARTIFACTS = [
     id: 'canon-campana',
     roomId: 'sala-independencia',
     name: 'Cañón de campaña',
+    period: 'Comienzos del siglo XIX',
+    culture: 'Europea',
     description:
       'Pieza de artillería de la época napoleónica, contemporánea a las guerras de independencia.',
     model: 'independencia/napoleonic_era_cannon.glb',
@@ -373,6 +420,8 @@ export const ARTIFACTS = [
     id: 'telefono-antiguo',
     roomId: 'sala-republica',
     name: 'Teléfono antiguo',
+    period: 'Finales del siglo XIX – comienzos del XX',
+    culture: 'Industrial',
     description: 'Teléfono de los primeros tiempos de la telefonía.',
     model: 'republica/antique_telephone.glb',
     material: 'original',
@@ -387,6 +436,8 @@ export const ARTIFACTS = [
     id: 'gramofono',
     roomId: 'sala-republica',
     name: 'Gramófono',
+    period: 'Comienzos del siglo XX',
+    culture: 'Industrial',
     description:
       'Reproductor de discos que popularizó la música grabada a comienzos del siglo XX.',
     model: 'republica/gramophone.glb',
@@ -402,6 +453,8 @@ export const ARTIFACTS = [
     id: 'molino-de-cafe',
     roomId: 'sala-republica',
     name: 'Molino de café',
+    period: 'Siglo XX',
+    culture: 'Cafetera colombiana',
     description:
       'El café fue el principal producto de exportación de Colombia durante el siglo XX.',
     model: 'republica/antique_coffee_mill.glb',
@@ -417,6 +470,8 @@ export const ARTIFACTS = [
     id: 'bandola-andina',
     roomId: 'sala-republica',
     name: 'Bandola andina colombiana',
+    period: 'Siglo XIX – presente',
+    culture: 'Andina colombiana',
     description:
       'Instrumento de cuerda pulsada de la música tradicional andina colombiana.',
     model: 'republica/colombian_andean_bandola_colombian_instrument.glb',
@@ -432,6 +487,8 @@ export const ARTIFACTS = [
     id: 'sombrero-vueltiao',
     roomId: 'sala-republica',
     name: 'Sombrero vueltiao',
+    period: 'Tradición viva',
+    culture: 'Zenú',
     description:
       'Tejido en caña flecha por el pueblo zenú; símbolo cultural de la Nación (Ley 908 de 2004).',
     model: 'republica/sombrero_vueltiao_colombia.glb',
