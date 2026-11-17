@@ -5,6 +5,7 @@ import { SPAWN_POINT } from '../data/rooms';
 import { ROOM_COMPONENTS } from '../rooms';
 import MuseumShell from '../components/three/MuseumShell';
 import { LoadingTracker, SceneReady } from './LoadingTracker';
+import MuseumEnvironment from './MuseumEnvironment';
 import Player from './Player';
 
 const EYE_HEIGHT = 1.6;
@@ -28,6 +29,7 @@ export default function MuseumScene() {
         <ambientLight intensity={0.35} />
         <directionalLight position={[3, 5, 4]} intensity={0.4} />
         <Suspense fallback={null}>
+          <MuseumEnvironment />
           <MuseumShell />
           {Object.entries(ROOM_COMPONENTS).map(([roomId, RoomComponent]) => (
             <RoomComponent key={roomId} />

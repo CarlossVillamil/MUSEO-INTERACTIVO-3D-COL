@@ -33,7 +33,7 @@ Pasos aplicados: conversión de materiales _spec/gloss_ a _metal/rough_ (three.j
 
 > Los originales de `models/source/` no se versionan (están en `.gitignore` por su peso); solo se suben los optimizados de `public/models/`, que son los que publica Vercel.
 
-> Los GLB optimizados usan las extensiones `KHR_draco_mesh_compression` y `EXT_texture_webp`: al cargarlos en la escena hay que configurar el decodificador Draco del loader.
+> Los GLB optimizados usan las extensiones `KHR_draco_mesh_compression` y `EXT_texture_webp`. El decodificador Draco se sirve localmente desde `public/draco/` (copiado de `three/examples/jsm/libs/draco/gltf/`; actualizarlo si se actualiza three).
 
 ## Controles
 
@@ -50,7 +50,7 @@ Pasos aplicados: conversión de materiales _spec/gloss_ a _metal/rough_ (three.j
 
 ```
 src/
-├── data/              # Catálogos puros (salas con su distribución y fichas de artefactos)
+├── data/              # Catálogos puros (salas, distribución y artefactos con sus modelos y créditos)
 ├── store/             # Estado global con Zustand + selectores
 ├── scene/             # Canvas, visitante (Player), carga, movimiento, proximidad y muros (layout)
 ├── lib/               # Configuración transversal (filtro de consola de three.js)
@@ -119,6 +119,26 @@ Un pasillo principal (norte–sur) conecta las cuatro salas temáticas en orden 
 - La distribución (límites de cada sala, pasillo y lado de la puerta) vive en `data/rooms.js`; los muros, vanos y dinteles se generan con `scene/layout.js`.
 - Cada sala tiene su señalética 3D (`RoomSign`) sobre el dintel de la puerta, del lado del pasillo. Usa la fuente local Cinzel (`@fontsource/cinzel`), elegida porque no tiene reglas tipográficas que troika-three-text no soporte (evita mensajes en consola).
 - Al cruzar una puerta, `Player` publica la sala en el store y `RoomBanner` muestra su nombre y periodo durante 3 segundos. La tecla `M` abre el minimapa con la posición actual.
+
+### Artefactos en las vitrinas
+
+- El catálogo `src/data/artifacts.js` define cada pieza: sala, ficha, modelo GLB, preset de material, tamaño de exhibición y crédito del modelo. El orden dentro de cada sala define su vitrina (`getExhibitSlots` en `scene/layout.js`: 9 vitrinas por sala, orientadas hacia la entrada).
+- `Artifact` carga el modelo con `useGLTF`, lo ajusta al tamaño de exhibición y aplica su material (`scene/materials.js`):
+
+| Preset     | Uso                                                |
+| ---------- | -------------------------------------------------- |
+| `oro`      | Orfebrería: totalmente metálico, reflejos marcados |
+| `metal`    | Armas y cascos                                     |
+| `ceramica` | Vasijas e instrumentos de barro                    |
+| `piedra`   | Bustos y esculturas                                |
+| `original` | Respeta el material del modelo                     |
+
+Campos opcionales: `tint` (color uniforme que reemplaza la textura), `rotation` (corrige la orientación del modelo) y `hiddenMeshes` (quita soportes o fotos que traen algunos escaneos).
+
+- Todos los materiales se normalizan a `MeshStandardMaterial`: los _unlit_ no reciben luz y los _physical_ suman mapas que, con las sombras de 9 spots, superan las 16 unidades de textura de la GPU.
+- `MuseumEnvironment` genera un mapa de entorno en la escena (paneles de luz, sin HDRI externos) para que los metales tengan qué reflejar.
+- Solo se encienden los spots de la sala donde está el visitante (máximo 9 luces con sombra).
+- Los créditos de cada modelo (autor, licencia CC y enlace) están en el campo `source` del catálogo.
 
 ### Iluminación de vitrinas
 

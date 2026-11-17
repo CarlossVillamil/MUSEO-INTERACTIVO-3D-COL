@@ -5,6 +5,7 @@ import {
   DOOR_WIDTH,
   WALL_HEIGHT,
   getDoor,
+  getExhibitSlots,
   getWallSegments,
 } from './layout';
 
@@ -71,5 +72,41 @@ describe('getWallSegments', () => {
   it('no duplica los muros compartidos entre salas', () => {
     // Muro entre Precolombina e Independencia (z = -12)
     expect(segmentsAt(-8, -12, 1)).toHaveLength(1);
+  });
+});
+
+describe('getExhibitSlots', () => {
+  const PEDESTAL_HALF_WIDTH = 0.35;
+
+  it('ubica todas las vitrinas dentro de su sala, sin tocar los muros', () => {
+    ROOMS.forEach((room) => {
+      const { minX, maxX, minZ, maxZ } = room.bounds;
+      getExhibitSlots(room).forEach(({ x, z }) => {
+        expect(x).toBeGreaterThan(minX + PEDESTAL_HALF_WIDTH);
+        expect(x).toBeLessThan(maxX - PEDESTAL_HALF_WIDTH);
+        expect(z).toBeGreaterThan(minZ + PEDESTAL_HALF_WIDTH);
+        expect(z).toBeLessThan(maxZ - PEDESTAL_HALF_WIDTH);
+      });
+    });
+  });
+
+  it('deja libre el paso frente a la puerta', () => {
+    ROOMS.forEach((room) => {
+      const door = getDoor(room);
+      getExhibitSlots(room).forEach(({ x, z }) => {
+        const inDoorway = Math.abs(z - door.z) < DOOR_WIDTH / 2;
+        if (inDoorway) expect(Math.abs(x - door.x)).toBeGreaterThan(5);
+      });
+    });
+  });
+
+  it('cada pieza mira hacia la entrada de la sala', () => {
+    const room = ROOMS.find((r) => r.id === 'sala-precolombina');
+    const door = getDoor(room);
+    getExhibitSlots(room).forEach(({ x, z, rotationY }) => {
+      const facing = { x: Math.sin(rotationY), z: Math.cos(rotationY) };
+      const toDoor = { x: door.x - x, z: door.z - z };
+      expect(facing.x * toDoor.x + facing.z * toDoor.z).toBeGreaterThan(0);
+    });
   });
 });

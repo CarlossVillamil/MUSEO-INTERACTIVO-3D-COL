@@ -4,21 +4,20 @@ import Pedestal from './Pedestal';
 
 const PEDESTAL_HEIGHT = 0.9;
 const PEDESTAL_WIDTH = 0.7;
-const ARTIFACT_SIZE = 0.4;
 
-/** Vitrina: base, artefacto y su iluminación. */
-export default function Exhibit({ artifact }) {
-  const artifactHeight = PEDESTAL_HEIGHT + ARTIFACT_SIZE / 2;
-
+/**
+ * Vitrina: base, artefacto y su iluminación, ubicada y orientada según
+ * `slot`. La luz solo se monta cuando `lit` (sala donde está el visitante),
+ * para no superar el límite de sombras de la GPU con todas las vitrinas.
+ */
+export default function Exhibit({ artifact, slot, lit }) {
   return (
-    <group position={artifact.position}>
+    <group position={[slot.x, 0, slot.z]} rotation={[0, slot.rotationY, 0]}>
       <Pedestal height={PEDESTAL_HEIGHT} width={PEDESTAL_WIDTH} />
-      <Artifact
-        artifact={artifact}
-        size={ARTIFACT_SIZE}
-        position={[0, artifactHeight, 0]}
-      />
-      <ExhibitLight targetHeight={artifactHeight} />
+      <Artifact artifact={artifact} position={[0, PEDESTAL_HEIGHT, 0]} />
+      {lit && (
+        <ExhibitLight targetHeight={PEDESTAL_HEIGHT + artifact.size / 2} />
+      )}
     </group>
   );
 }

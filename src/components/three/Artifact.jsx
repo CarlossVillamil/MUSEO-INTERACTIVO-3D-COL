@@ -1,11 +1,34 @@
+import { useMemo } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { Box3 } from 'three';
+import { MODELS_BASE_URL } from '../../data/artifacts';
+import { fitToSize, prepareModel } from '../../scene/materials';
 import { useMuseumStore } from '../../store/useMuseumStore';
 
+// Decodificador Draco servido localmente (copiado de three/examples/jsm/libs)
+const DRACO_DECODER_PATH = '/draco/';
+
 /**
- * Artefacto seleccionable de la escena. Solo escribe en el store global;
- * no sabe nada de la interfaz 2D que mostrará su ficha.
+ * Artefacto seleccionable: carga su modelo GLB optimizado, le aplica el
+ * material PBR del catálogo y lo ajusta al tamaño de exhibición, apoyado
+ * sobre `position`. Solo escribe en el store global al ser seleccionado.
  */
-export default function Artifact({ artifact, size, position }) {
+export default function Artifact({ artifact, position }) {
+  const { scene } = useGLTF(
+    MODELS_BASE_URL + artifact.model,
+    DRACO_DECODER_PATH
+  );
   const selectArtifact = useMuseumStore((s) => s.selectArtifact);
+
+  const { model, fit } = useMemo(() => {
+    const root = prepareModel(scene.clone(true), artifact);
+    if (artifact.rotation) root.rotation.set(...artifact.rotation);
+    root.updateMatrixWorld(true);
+    return {
+      model: root,
+      fit: fitToSize(new Box3().setFromObject(root), artifact.size),
+    };
+  }, [scene, artifact]);
 
   const handleClick = (event) => {
     event.stopPropagation();
@@ -13,14 +36,10 @@ export default function Artifact({ artifact, size, position }) {
   };
 
   return (
-    <mesh
-      name={artifact.id}
-      position={position}
-      castShadow
-      onClick={handleClick}
-    >
-      <boxGeometry args={[size, size, size]} />
-      <meshStandardMaterial color="#d4af37" metalness={0.6} roughness={0.35} />
-    </mesh>
+    <group name={artifact.id} position={position} onClick={handleClick}>
+      <group position={fit.position} scale={fit.scale}>
+        <primitive object={model} />
+      </group>
+    </group>
   );
 }

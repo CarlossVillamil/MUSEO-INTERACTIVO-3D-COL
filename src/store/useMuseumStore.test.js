@@ -44,18 +44,18 @@ describe('useMuseumStore', () => {
 
   // Escenario: Comunicación 2D-3D
   it('al seleccionar un artefacto la ficha correspondiente queda disponible', () => {
-    useMuseumStore.getState().selectArtifact('artefacto-2');
+    useMuseumStore.getState().selectArtifact('popora-de-oro');
 
     const artifact = selectSelectedArtifact(useMuseumStore.getState());
     expect(artifact).toMatchObject({
-      id: 'artefacto-2',
-      name: 'Artefacto de ejemplo 2',
+      id: 'popora-de-oro',
+      name: 'Poporo de oro',
     });
   });
 
   it('limpia la selección', () => {
     const { selectArtifact, clearSelection } = useMuseumStore.getState();
-    selectArtifact('artefacto-1');
+    selectArtifact('pechera-tairona');
     clearSelection();
 
     expect(selectSelectedArtifact(useMuseumStore.getState())).toBeNull();

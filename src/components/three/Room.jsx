@@ -1,18 +1,31 @@
-import { getRoomById, getRoomCenter } from '../../data/rooms';
+import { getArtifactsByRoom } from '../../data/artifacts';
+import { getRoomById } from '../../data/rooms';
+import { getExhibitSlots } from '../../scene/layout';
+import { useMuseumStore } from '../../store/useMuseumStore';
+import Exhibit from './Exhibit';
 import RoomSign from './RoomSign';
 
 /**
- * Contenedor común de una sala: coloca su señalética en la entrada y
- * posiciona el contenido (vitrinas) relativo al centro de la sala.
+ * Contenedor común de una sala: su señalética en la entrada y una vitrina
+ * por cada artefacto del catálogo, en el orden de `data/artifacts.js`.
  */
-export default function Room({ roomId, children }) {
+export default function Room({ roomId }) {
   const room = getRoomById(roomId);
-  const center = getRoomCenter(room);
+  const slots = getExhibitSlots(room);
+  const artifacts = getArtifactsByRoom(roomId);
+  const isCurrentRoom = useMuseumStore((s) => s.currentRoomId === roomId);
 
   return (
     <group name={roomId}>
       <RoomSign room={room} />
-      <group position={[center.x, 0, center.z]}>{children}</group>
+      {artifacts.map((artifact, i) => (
+        <Exhibit
+          key={artifact.id}
+          artifact={artifact}
+          slot={slots[i]}
+          lit={isCurrentRoom}
+        />
+      ))}
     </group>
   );
 }

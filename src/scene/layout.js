@@ -1,4 +1,4 @@
-import { CORRIDOR, ROOMS } from '../data/rooms';
+import { CORRIDOR, ROOMS, getRoomCenter } from '../data/rooms';
 
 export const WALL_HEIGHT = 4;
 export const DOOR_WIDTH = 3;
@@ -103,4 +103,42 @@ export function getWallSegments(rooms = ROOMS, corridor = CORRIDOR) {
 
   const unique = new Map(segments.map((s) => [segmentKey(s), s]));
   return [...unique.values()];
+}
+
+/**
+ * Vitrinas de una sala en coordenadas locales (centro de la sala), suponiendo
+ * la puerta en el muro +x: tres contra el muro del fondo, dos en cada muro
+ * lateral y dos en el centro, dejando libre el paso desde la entrada.
+ */
+const EXHIBIT_SLOTS = [
+  [-4.5, -3.5],
+  [-4.5, 0],
+  [-4.5, 3.5],
+  [-1.5, -4.5],
+  [1.5, -4.5],
+  [-1.5, 4.5],
+  [1.5, 4.5],
+  [-1, -1.8],
+  [-1, 1.8],
+];
+
+// Las piezas miran hacia este punto (cerca de la entrada, dentro de la sala)
+const FOCUS_DISTANCE_FROM_CENTER = 2;
+
+export const MAX_EXHIBITS_PER_ROOM = EXHIBIT_SLOTS.length;
+
+/**
+ * Posición (x, z) de cada vitrina de una sala y su rotación en Y para que la
+ * pieza (cuyo frente es +z) mire hacia la entrada.
+ */
+export function getExhibitSlots(room) {
+  const center = getRoomCenter(room);
+  const doorDirection = room.doorSide === 'east' ? 1 : -1;
+  const focusX = center.x + FOCUS_DISTANCE_FROM_CENTER * doorDirection;
+
+  return EXHIBIT_SLOTS.map(([localX, localZ]) => {
+    const x = center.x + localX * doorDirection;
+    const z = center.z + localZ;
+    return { x, z, rotationY: Math.atan2(focusX - x, center.z - z) };
+  });
 }
